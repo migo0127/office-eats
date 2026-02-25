@@ -1,0 +1,76 @@
+<!-- 基礎訊息類: 右上顯示 -->
+<p-toast
+  key="custom-default"
+  position="top-right"
+  class="custom-toast"
+  [ngStyle]="{ 'width': isMobile() ? '20rem' : '25rem' }"
+  (onClose)="onClose($event)"
+  [autoZIndex]="true"
+  [baseZIndex]="z_index.TOAST"
+  >
+</p-toast>
+
+<!-- confirm 確認類: 中間顯示 -->
+<p-toast
+  key="custom-confirm"
+  position="top-center"
+  class="custom-toast"
+  [ngStyle]="{ 'width': isMobile() ? '20rem' : '25rem' }"
+  [autoZIndex]="true"
+  [baseZIndex]="z_index.TOAST"
+  >
+  <ng-template let-message pTemplate="message">
+    <div class="w-full">
+      <!-- toast-header -->
+      <div class="toast-header flex justify-content-between align-items-center">
+        <!-- title -->
+        <div class="flex align-items-center gap-2">
+          @let icon = message.icon || _tipIcons[message.severity];
+          <!-- severity icon -->
+          <i class="pi" [ngClass]="icon"></i>
+          <!-- title -->
+          <h4 class="font-bold my-2">{{ message.summary }}</h4>
+        </div>
+        <!-- 右上 X icon -->
+        <div
+          class="cursor-pointer p-2 text-500 hover:text-700"
+          (click)="onClose(message)"
+          >
+          <i class="pi pi-times">
+          </i>
+        </div>
+      </div>
+
+      <!-- toast-body -->
+      <div class="toast-body flex align-items-center">
+        <div [innerHTML]="message.detail | sanitize: 'trustHtml'"></div>
+      </div>
+
+      <!-- toast-footer -->
+      <div class="toast-footer flex gap-2 justify-content-between ">
+        @let data = message.data;
+        @if(data?.showConfirmBtn){
+          <button
+            pButton
+            class="p-button-sm w-full"
+            [severity]="message.severity"
+            [label]="data.confirmBtnText || '確定'"
+            (click)="onConfirm(message)"
+            >
+          </button>
+          }
+
+        @if(data.showCloseBtn) {
+          <button
+            pButton
+            [label]="data.closeBtnText || '關閉'"
+            (click)="onBtnClose(message)"
+            severity="secondary"
+            class="p-button-sm p-button-text w-full bg-gray-200 hover:bg-gray-300"
+            >
+          </button>
+          }
+      </div>
+    </div>
+  </ng-template>
+</p-toast>

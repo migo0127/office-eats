@@ -1,0 +1,72 @@
+<p-toolbar class="header-toolbar border-none shadow-1 px-2 py-1 md:px-4 ">
+  <!-- logo -->
+  <div 
+    class="p-toolbar-group-start gap-3"
+    (click)="navigateToDashboard()"
+    >
+    <div class="flex align-items-center gap-2 cursor-pointer">
+      <img alt="Logo" class="logo hidden md:block" />
+      <span class="text-xl font-bold title">
+        OffiecEats
+      </span>
+    </div>
+  </div>
+  
+  <!-- $$ -->
+  <!-- @let balance = balances.balance; -->
+  <div class="p-toolbar-group-end flex gap-3">
+    @if(this.balances()) {
+      @let balances = this.balances();
+      <div class="flex align-items-center py-2 border-round-xl cursor-pointer">
+        <div 
+          class="flex gap-2 align-items-center font-bold text-xl " 
+          [ngClass]="{
+            'text-red-600': balances.balance <= BlanceStatus.LOWER,
+            'text-orange-500': balances.balance > BlanceStatus.LOWER && balances.balance <= BlanceStatus.MIDDLE,
+            'balance': balances.balance > BlanceStatus.MIDDLE
+          }"
+          pTooltip="更新時間：{{ balances.updateTime | date: 'yyyy-MM-dd HH:mm:ss' }}"
+          tooltipPosition="left"
+          >
+          <span class="text-sm hidden md:block">
+            <i class="pi pi-wallet"></i>
+            餘額
+          </span>
+          <span>
+            ${{ balances.balance | number: '1.0-0' }}
+          </span>
+        </div>
+      </div>
+    }
+
+    <!-- 小鈴噹 -->
+    <!-- <div class="bell flex justify-content-center align-items-center px-1">
+      <i 
+        pBadge 
+        class="pi pi-bell" 
+        [value]="notificationCount"
+        style="--p-badge-font-size: 0.6rem; --p-badge-min-width: 1rem; --p-badge-height: 1rem;"
+        >
+      </i>
+    </div> -->
+
+    <!-- RWD 漢堡排 -->
+     <p-button 
+      icon="pi pi-bars" 
+      [text]="true" 
+      severity="secondary" 
+      class="md:hidden" 
+      (onClick)="onMenuToggle.emit()" 
+      />
+
+    <!-- 登出 -->
+    <p-button 
+      icon="pi pi-sign-out" 
+      class="hidden md:flex logout custom-p-button"
+      [rounded]="true" 
+      [text]="true"
+      (onClick)="onLogout()">
+    </p-button>
+
+  </div>
+</p-toolbar>

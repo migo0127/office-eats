@@ -1,0 +1,104 @@
+<section id="comments-section" class="flex flex-column h-full">
+  
+  <div class="flex-grow-1 overflow-y-auto px-2" style="max-height: 70vh;">
+    @for(data of this.datas(); track data.pId; let last = $last) {
+      <!-- 商品名 & 星星 & 總評論數 -->
+      <div 
+        class="flex flex-column gap-2 mb-2 surface-border pb-2"
+        [class.border-bottom-1]="!last"
+        >
+        @let isEdit = data.isEdit;
+        <!-- 商品名 -->
+        <div class="flex flex-column md:flex-row align-items-start md:align-items-center gap-1 md:gap-2 mt-3 mb-2">
+          <p class="text-4xl font-bold m-0">{{ data.productName }}</p>
+          
+          @if(!isEdit) {
+            <!-- 查看時的星星 & 評論數 -->
+            <div class="flex align-items-center gap-2">
+              <p-rating 
+                class="custom-rating" 
+                [ngModel]="data.productRating" 
+                [readonly]="true"
+                />
+              <span class="text-500">(+{{ data.totalComments }})</span>
+            </div>
+          } @else {
+            <!-- 編輯時的星星 -->
+            <p-rating 
+              class="custom-rating" 
+              [(ngModel)]="data.myRating" 
+              />
+          }
+        </div>
+
+        <!-- 評論內容區 -->
+        <div>
+          <!-- 編輯時的評論內容區 textarea -->
+          @if (isEdit) {
+            <div class="flex flex-column gap-3 mb-3">
+              <textarea 
+                rows="4" 
+                pInputTextarea 
+                [(ngModel)]="data.myComment" 
+                placeholder="撰寫您的評論: 味道如何？份量夠嗎？"
+                class="w-full border-round-lg shadow-1"
+                maxlength="150"
+                [class.input-error]="isCommonRequired() && !data.myComment"
+              ></textarea>
+            </div>
+          } @else {
+            <!-- 查看時的評論區內容顯示 -->
+            <div class="flex flex-column gap-4">
+              @for (item of data.comments; track $index) {
+                <div class="comment-item flex flex-column gap-2 bg-gray-50 p-3 border-round">
+                  <div class="flex justify-content-between align-items-center">
+                    <div class="flex align-items-center gap-2">
+                      <span class="font-bold text-lg">{{ item.userName }}</span>
+                      <p-rating 
+                        [ngModel]="item.userRating" 
+                        [readonly]="true"
+                        />
+                    </div>
+                    <span class="text-500 text-xs">{{ item.date }}</span>
+                  </div>
+                  <p class="m-0 text-700 pt-1 line-height-3" style="word-break: break-all;">
+                    {{ item.content }}
+                  </p>
+                </div>
+              } @empty {
+                <div class="text-center py-5 text-500 bg-gray-50 border-round">暫無評論</div>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <div class="flex justify-content-center align-items-center text-4xl mt-8 text-400">
+        <i class="pi pi-inbox mr-3 text-4xl"></i>暫無資料
+      </div>
+    }
+  </div>
+
+  <!-- 編輯時才顯示 送出 & 取消 BTN -->
+  @if (this.datas()[0]?.isEdit) {
+    <div class="flex justify-content-end align-items-center gap-3 pt-4 border-top-1 surface-border sticky bottom-0 bg-white">
+      <p-button 
+        label="送出評價" 
+        icon="pi pi-check" 
+        class="custom-p-button"
+        (onClick)="submitAllComments()" 
+        />
+      
+      <p-button 
+        class="custom-p-button"
+        label="取消" 
+        severity="secondary" 
+        [outlined]="true" 
+        type="button" 
+        styleClass="px-4"
+        (onClick)="ref.close()" 
+        />
+     
+    </div>
+  }
+</section>

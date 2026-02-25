@@ -1,0 +1,333 @@
+<section id="shop-info-section">
+  <div class="cursor-pointer hover:underline text-color-secondary" (click)="goBack()">
+    <i class="pi pi-arrow-left mr-2"></i>
+    <span>返回商家列表</span>
+  </div>
+
+  <div class="flex flex-column gap-2 mb-4">
+    <header
+      class="flex flex-column md:flex-row justify-content-between align-items-start md:align-align-items-center md:gap-4"
+      >
+      <div class="w-full flex flex-row md:flex-column justify-content-between md:justify-content-start align-items-center md:align-items-start gap-2 mt-3 mb-2" >
+        <h1 class="text-3xl font-black text-800 m-0">商家管理</h1>
+       @if(shop()){
+         <span class="text-500">更新日期：{{ shop()?.updatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</span>
+       }
+      </div>
+      <div class="flex w-full flex-1 justify-content-end mt-auto nowrap">
+        <!-- 匯出 -->
+        <p-button
+          label="匯出"
+          icon="pi pi-file-export"
+          [text]="true"
+          class="custom-p-button-text"
+          (click)="exportExcel()"
+        />
+        <!-- 匯入 -->
+        <p-button
+          label="匯入"
+          icon="pi pi-file-import"
+          [text]="true"
+          class="custom-p-button-text"
+          (click)="importExcel()"
+        />
+        <!-- 全部更新 -->
+        <p-button
+          label="全部更新"
+          icon="pi pi-cloud-upload"
+          [text]="true"
+          class="custom-p-button-text"
+          (click)="onUpdateAll()"
+        />
+      </div>
+    </header>
+
+    <p-card class="shop-info shadow-sm border-0 custom-p-card">
+      <ng-template pTemplate="header">
+        <div class="w-full flex flex-column md:flex-row justify-content-center md:justify-content-between align-items-start md:align-items-center pt-3 px-3 md:pt-4 md:px-4 mb-1">
+          <div class="w-full flex justify-content-between md:justify-content-start align-items-center gap-2">
+            <span class="text-xl font-bold">基本資訊</span>
+          </div>
+          <p-button
+            label="更新資訊"
+            icon="pi pi-save"
+            size="small"
+            class="custom-p-button-text align-self-end nowrap"
+            [text]="true"
+            (click)="onUpdateShop()"
+          />
+        </div>
+      </ng-template>
+      <div class="flex flex-wrap gap-3">
+        <div
+          class="flex flex-column lg:flex-row lg:justify-content-center gap-2 w-full lg:w-[calc(50%-0.75rem)]"
+          >
+          <label class="headline font-bold text-700 flex-none">商家名稱</label>
+          <input
+            pInputText
+            [(ngModel)]="shop().shopName"
+            placeholder="請輸入名稱"
+            class="flex-1 custom-p-input"
+          />
+        </div>
+
+        <div
+          class="flex flex-column lg:flex-row lg:justify-content-center gap-2 w-full lg:w-[calc(50%-0.75rem)]"
+        >
+          <label class="headline font-bold text-700 flex-none">聯絡電話</label>
+          <input
+            pInputText
+            [(ngModel)]="shop().tel"
+            placeholder="02-XXXX-XXXX"
+            class="flex-1 custom-p-input"
+          />
+        </div>
+
+        <div
+          class="flex flex-column lg:flex-row lg:justify-content-center gap-2 w-full lg:w-[calc(50%-0.75rem)]"
+        >
+          <label class="headline font-bold text-700 flex-none">標籤</label>
+          <p-multiSelect
+            [options]="tagOptions"
+            [(ngModel)]="shop().shopTags"
+            optionLabel="label"
+            optionValue="value"
+            [maxSelectedLabels]="isMobile() ? 4 : 5"
+            placeholder="選擇標籤"
+            display="chip"
+            class="flex-1 w-full custom-p-multiSelect"
+          />
+        </div>
+
+        <div
+          class="flex flex-column md:flex-row gap-2 w-full "
+        >
+          <label class="headline font-bold text-700 flex-none">公休日</label>
+          <div class="flex flex-wrap gap-3 flex-1">
+            @for (day of weekDays; track day.value) {
+              <div class="flex justify-content-center gap-1">
+                <p-checkbox
+                  [name]="'offDays'"
+                  [value]="day.value"
+                  [(ngModel)]="shop().offDays"
+                  class="custom-p-checkbox"
+                />
+                <label class="text-sm cursor-pointer">{{ day.label }}</label>
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="flex flex-column lg:flex-row lg:items-start gap-2 w-full">
+          <label class="headline font-bold text-slate-700 lg:w-32 flex-none lg:mt-2">
+            營業時間
+            </label>
+          <div class="flex-1 flex flex-column gap-3">
+            <div class="flex flex-column md:flex-row flex-wrap md:flex-nowrap gap-3">
+              <p-datePicker
+                [(ngModel)]="tempStartTime"
+                [timeOnly]="true"
+                hourFormat="24"
+                placeholder="開始"
+                [showIcon]="true"
+                iconDisplay="input"
+                class="custom-p-datepicker"
+              />
+              <span class="align-self-center">至</span>
+              <p-datePicker
+                [(ngModel)]="tempEndTime"
+                [timeOnly]="true"
+                hourFormat="24"
+                placeholder="結束"
+                [showIcon]="true"
+                iconDisplay="input"
+                class="custom-p-datepicker"
+              />
+              
+            </div>
+            <p-button
+              icon="pi pi-plus"
+              label="新增時段"
+              size="small"
+              class="custom-p-button"
+              (click)="addBusinessHour()"
+            />
+            <div class="flex flex-wrap gap-2">
+              @for (time of shop().businessHours; track time; let i = $index) {
+                <p-tag severity="info" [rounded]="true">
+                  <div class="flexpx-1">
+                    <span>{{ time }}</span>
+                    <i 
+                      class="pi pi-times cursor-pointer text-xs" 
+                      (click)="removeBusinessHour(i)"
+                      >
+                    </i>
+                  </div>
+                </p-tag>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="flex flex-column lg:flex-row lg:items-start gap-2 w-full lg:w-[calc(50%-0.75rem)]"
+        >
+          <label class="headline font-bold text-slate-700 lg:w-32 flex-none lg:mt-2">
+            商家地址
+          </label>
+          <input 
+            pInputText 
+            placeholder="請輸入地址" 
+            class="flex-1 w-full custom-p-textarea"
+            type="text" 
+            [(ngModel)]="shop().address" 
+            name="address" 
+            id="address"
+            >
+        </div>
+
+        <div
+          class="flex flex-column lg:flex-row lg:items-start gap-2 w-full lg:w-[calc(50%-0.75rem)]"
+        >
+          <label class="headline font-bold text-slate-700 lg:w-32 flex-none lg:mt-2"> 備註 </label>
+          <textarea
+            pTextarea
+            [(ngModel)]="shop().note"
+            rows="3"
+            class="flex-1 w-full custom-p-textarea"
+          >
+          </textarea>
+        </div>
+      </div>
+    </p-card>
+
+    <p-card class="shadow-sm border-0 mt-3 custom-p-card">
+      <div class="w-full flex flex-column md:flex-row justify-content-between md:align-items-center mb-2">
+        <div class="w-full flex justify-content-between md:justify-content-start align-items-center gap-2">
+          <span class="text-xl font-bold">產品資訊</span>
+        </div>
+        <div class="flex flex-1 w-full justify-content-end gap-1 nowrap">
+          <!-- 新增商品 -->
+          <p-button
+            label="新增商品"
+            icon="pi pi-plus"
+            size="small"
+            [text]="true"
+            class="custom-p-button-text"
+            (click)="onAddProduct()"
+          />
+          <!-- 更新商品 -->
+          <p-button
+            label="更新商品"
+            icon="pi pi-save"
+            size="small"
+            [text]="true"
+            class="custom-p-button-text"
+            (click)="onUpdateProducts()"
+          />
+        </div>
+      </div>
+
+      <p-table [value]="shop().menu || []" breakpoint="960px" class="p-datatable-sm">
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem; min-width: fit-content" class="text-center">#</th>
+            <th style="width: 15rem; min-width: 180px">產品名稱</th>
+            <th style="width: 7rem; min-width: 80px" pSortableColumn="price">
+              單價
+              <p-sortIcon field="price" />
+            </th>
+            <th style="width: 7rem; min-width: 80px">數量</th>
+            <th style="min-width: fit-content" pSortableColumn="disabled">
+              狀態
+              <p-sortIcon field="disabled" />
+            </th>
+            <th style="width: 8rem">產品圖片</th>
+            <th style="min-width: 200px">備註</th>
+            <th>刪除</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-prod let-i="rowIndex">
+          <tr>
+            <td class="text-center">
+              {{ i + 1 }}
+            </td>
+            <!-- 產品名稱 -->
+            <td>
+              <input
+                pInputText
+                [(ngModel)]="prod.productName"
+                class="w-full custom-p-input"
+                placeholder="請輸入名稱"
+              />
+            </td>
+            <!-- 單價 -->
+            <td>
+              <p-inputNumber
+                [(ngModel)]="prod.price"
+                [min]="0"
+                [maxFractionDigits]="0"
+                class="w-full custom-p-inputNumber"
+                mode="decimal"
+              />
+            </td>
+            <!-- 數量 -->
+            <td>
+              <p-inputNumber
+                [(ngModel)]="prod.quantity"
+                [showButtons]="true"
+                [min]="0"
+                class="w-full custom-p-inputNumber"
+              />
+            </td>
+            <!-- 狀態 -->
+            <td>
+              <p-select
+                [options]="statusOptions"
+                [(ngModel)]="prod.disabled"
+                optionLabel="label"
+                optionValue="value"
+                [appendTo]="'body'"
+                class="w-full custom-p-select"
+              />
+            </td>
+            <!-- 產品圖片 -->
+            <td>
+              <p-fileUpload
+                mode="basic"
+                chooseIcon="pi pi-image"
+                accept="image/jpg, image/jpeg, image/png"
+                maxFileSize="1000000"
+                [auto]="true"
+                styleClass="p-button-secondary p-button-text w-full"
+                chooseLabel="上傳"
+                class="custom-p-fileUpload"
+                (onSelect)="onProductImageUpload($event, prod)"
+              />
+            </td>
+            <!-- 備註 -->
+            <td>
+              <input
+                pInputText
+                [(ngModel)]="prod.note"
+                class="w-full"
+                placeholder="如：最低2分糖"
+                class="custom-p-input w-full"
+              />
+            </td>
+            <!-- 刪除 -->
+            <td>
+              <p-button
+                icon="pi pi-trash"
+                [text]="true"
+                severity="danger"
+                class="custom-p-button"
+                (click)="onRemoveProduct(i)"
+              />
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  </div>
+</section>

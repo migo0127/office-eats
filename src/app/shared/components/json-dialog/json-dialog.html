@@ -1,0 +1,12 @@
+<p-dialog
+  [header]="vm().title"
+  [modal]="true"
+  [(visible)]="vm().isVisible"
+  (onHide)="onHide()"
+  [style]="{ width: '80vw', height: '80vh' }"
+  >
+  
+  @for(item of vm().data; track $index) {
+    <pre>{{ item.key }}: {{ item.value | json }}</pre>
+  }
+</p-dialog>

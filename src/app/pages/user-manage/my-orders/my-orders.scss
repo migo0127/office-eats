@@ -1,0 +1,16 @@
+#my-orders-section {
+  label {
+    white-space: nowrap;
+  }
+
+  p-table {
+    tr:not(.expandedrow-row):hover {
+      background: var(--main-50);
+    }
+
+    .detil-title {
+      background: var(--main-63);
+    }
+
+  }
+}

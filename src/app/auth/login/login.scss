@@ -1,0 +1,31 @@
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 1.5rem;
+  background-image: url('@assets/img/login.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+:host ::ng-deep .login-card {
+  width: 100%;
+  max-width: 26.25rem;
+
+  @media screen and (max-width: 480px) {
+    max-width: 100%;
+  }
+
+  .p-card-content {
+    padding-top: 0;
+  }
+
+  .p-floatlabel:has(input:focus) label, .p-floatlabel:has(input:-webkit-autofill) label, .p-floatlabel:has(textarea:focus) label, .p-floatlabel:has(.p-inputwrapper-focus) label {
+    color: #326fd1;
+  }
+
+  .p-inputtext:enabled:focus, .p-select:not(.p-disabled).p-focus{
+    border-color: #326fd1 !important;
+  }
+}

@@ -1,0 +1,59 @@
+<div id="menu-div" class="flex flex-column gap-1 p-2">
+  @for (item of displayMenu(); track item.label) {
+    @if (item.visible) {
+      <div class="flex flex-column relative menu-item-group">
+        <a
+          [routerLink]="item.items ? null : item.routerLink"
+          routerLinkActive="active-link"
+          class="flex align-items-center p-3 border-round no-underline cursor-pointer"
+          [pTooltip]="collapsed() && !item.items ? item.label : null"
+          tooltipPosition="right"
+          [class.justify-content-center]="collapsed()"
+          (click)="handleItemClick(item)"
+        >
+          <i [class]="item.icon" class="text-xl"></i>
+
+          <!-- PC 展開狀態: 顯示選單名 + 箭頭 icon -->
+          @if (!collapsed()) {
+            <span class="ml-3 font-medium white-space-nowrap flex-grow-1">
+              {{ item.label }}
+            </span>
+            @if (item.items) {
+              <i
+                class="pi"
+                [ngClass]="item.visible ? 'pi-chevron-down' : 'pi-chevron-right'"
+                style="font-size: 0.7rem"
+                >
+              </i>
+            }
+          }
+        </a>
+        <!-- 子菜單 -->
+        @if (item.items) {
+          <div
+            class="submenu-container px-2"
+            [ngClass]="{
+              'show-expanded': !collapsed() && item.expanded,
+              'show-collapsed-overlay': collapsed(),
+            }"
+           >
+            @for (child of item.items; track child.label) {
+              <a
+                [routerLink]="child.routerLink"
+                routerLinkActive="active-link-sub"
+                [routerLinkActiveOptions]="{ exact: true }"
+                class="flex align-items-center p-2 pl-4 border-round no-underline "
+                (click)="navigate(child.routerLink)"
+                >
+                <i [class]="child.icon" style="font-size: 0.85rem"></i>
+                <span class="ml-3 text-sm white-space-nowrap">
+                  {{ child.label }}
+                </span>
+              </a>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>

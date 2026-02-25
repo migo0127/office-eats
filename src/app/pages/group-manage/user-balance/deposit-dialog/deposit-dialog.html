@@ -1,0 +1,103 @@
+<section id="deposit-dialog-section" class="flex flex-column">
+  @if(userData()){
+    <div class="flex-grow-1 px-2">
+      @let user = userData();
+      <div class="flex flex-column gap-2 mb-4 mt-3">
+        <label class="text-sm font-bold text-500 uppercase tracking-wide">使用者資訊</label>
+        <div
+          class="flex align-items-center gap-3 p-3 bg-gray-50 border-round-lg border-1 surface-border"
+          >
+          <div
+            class="flex-shrink-0 bg-main-700 text-white border-circle flex align-items-center justify-content-center"
+            style="width: 40px; height: 40px"
+            >
+            <i class="pi pi-user"></i>
+          </div>
+          <div class="flex flex-column gap-1">
+            <span class="text-xl font-bold text-900">{{ user.name }}</span>
+            <span class="text-xs text-500">Email: {{ user.email }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-column md:flex-row gap-3 mb-4">
+        <div
+          class="flex-1 flex flex-column gap-1 p-3 border-round-lg border-1 surface-border bg-white"
+        >
+          <span class="text-sm font-bold text-500">當前餘額</span>
+          <span class="text-2xl font-bold text-700">${{ user.balance | number }}</span>
+        </div>
+
+        <div
+          class="flex-1 flex flex-column gap-1 p-3 border-round-lg border-1 surface-border bg-white shadow-1"
+        >
+          <span class="text-sm font-bold text-500">調整後最終額度</span>
+          <span
+            class="text-2xl font-bold"
+            [ngClass]="{ 'text-green-600': !isNegative(), 'text-red-600': isNegative() }"
+          >
+            ${{ finalBalance() | number }}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex flex-column gap-3 mb-4 pt-2">
+        <label for="amount" class="text-sm font-bold text-500 uppercase tracking-wide">
+          額度調整金額 <span class="text-400 font-normal ml-1">(儲值輸入正數 / 扣款輸入負數)</span>
+        </label>
+
+        <div class="flex flex-column gap-2">
+          <p-inputNumber
+            [(ngModel)]="amount"
+            inputId="amount"
+            [showButtons]="true"
+            buttonLayout="horizontal"
+            spinnerMode="horizontal"
+            decrementButtonClass="p-button-secondary border-round-left-lg"
+            incrementButtonClass="p-button-primary border-round-right-lg"
+            incrementButtonIcon="pi pi-plus"
+            decrementButtonIcon="pi pi-minus"
+            mode="decimal"
+            [minFractionDigits]="0"
+            class="w-full custom-input-number"
+            inputStyleClass="w-full text-center font-bold text-xl py-3"
+            placeholder="請輸入調整金額"
+            autofocus
+          />
+
+          @if (amount() !== 0) {
+            <div
+              class="flex align-items-center gap-2 text-sm mt-1"
+              [ngClass]="isNegative() ? 'text-red-500' : 'text-green-600'"
+            >
+              <i [class]="isNegative() ? 'pi pi-arrow-down' : 'pi pi-arrow-up'"></i>
+              <span>即將從帳戶中 {{ isNegative() ? '扣除' : '存入' }} ${{ amount() | number }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <div
+    class="flex justify-content-end align-items-center gap-3 pt-4 border-top-1 surface-border sticky bottom-0 bg-white"
+  >
+    <p-button
+      label="確認調整"
+      icon="pi pi-check"
+      class="custom-p-button"
+      [disabled]="amount() === 0"
+      (onClick)="save()"
+    />
+
+    <p-button 
+        class="custom-p-button"
+        label="取消" 
+        severity="secondary" 
+        [outlined]="true" 
+        type="button" 
+        styleClass="px-4"
+        (onClick)="cancel()" 
+        />
+  </div>
+</section>

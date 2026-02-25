@@ -1,1 +1,335 @@
-/* You can add global styles to this file, and also import other style files */
+@use './styles/main.scss';
+
+:root {
+  --zIdx-base: 0, 
+  --zIdx-navbar: 100;
+  --zIdx-dropdown: 200;
+  --zIdx-topptip: 300;
+  --zIdx-dialog: 1000;
+  --zIdx-toast: 2000;
+  --zIdx-loading: 9999;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+// 將根字體大小強制設定為 16px
+html {
+  font-size: 16px !important;
+}
+
+// 設定 body 的字體
+body {
+  font-size: 1rem;
+  // 使用 PrimeNG 的字體變數
+  font-family: var(--font-family);
+}
+
+// 切換對應顏色的logo
+body.theme-admin {
+  --logo-url: url('/assets/img/logo-4.png');
+}
+
+body.theme-customer {
+  --logo-url: url('/assets/img/logo-5.png');
+}
+
+/* 修改全域滾動條樣式 */
+::-webkit-scrollbar {
+  width: 8px; /* 垂直滾動條寬度 */
+  height: 8px; /* 水平滾動條高度 */
+}
+
+/* 滾動條軌道 (Track) */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+/* 滾動條滑塊 (Handle) */
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+  border: 2px solid #f1f1f1; /* 增加邊距感，讓滑塊看起來像懸浮 */
+}
+
+/* 滑鼠移入滑塊時變色 */
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Firefox 專用支援 (目前僅支援寬度與顏色) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #b0b0b0 #f9f9f9;
+}
+
+$levels: 25, 50, 63, 75, 100, 200, 300, 400, 500, 600, 700;
+
+@each $v in $levels {
+  // 文字顏色 (ex: .text-main-500)
+  .text-main-#{$v} {
+    color: var(--main-#{$v}) !important;
+  }
+  // 背景顏色 (ex: .bg-main-50)
+  .bg-main-#{$v} {
+    background-color: var(--main-#{$v}) !important;
+  }
+  // 邊框顏色 (ex: .border-main-200)
+  .border-main-#{$v} {
+    border-color: var(--main-#{$v}) !important;
+  }
+}
+
+.text-gray-main {
+  color: #334155;
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.custom-select-button .p-togglebutton.p-togglebutton-checked {
+  color: var(--p-orange-500) !important;
+}
+
+.lunch-tag {
+  color: var(--p-orange-600) !important;
+  background-color: var(--p-orange-100) !important;
+}
+
+.drink-tag {
+  color: var(--p-cyan-600) !important;
+  background-color: var(--p-cyan-100) !important;
+}
+
+.teaTime-tag {
+  color: var(--p-purple-600) !important;
+  background-color: var(--p-purple-100) !important;
+}
+
+.p-inputtext {
+  padding: 0.55rem 0.5rem !important;
+}
+
+.p-select-label {
+  padding: 0.35rem 0.5rem !important;
+}
+
+p-table {
+  th,
+  td {
+    white-space: nowrap;
+  }
+}
+
+.p-menu {
+  min-width: fit-content !important;
+}
+
+// p-rating
+.custom-rating.p-rating, .p-rating {
+  .p-rating-icon:not(.p-rating-icon-empty) {
+    color: var(--p-yellow-400);
+  }
+
+  .p-rating-icon-empty {
+    color: var(--p-yellow-100);
+  }
+
+  .p-rating-icon {
+    width: 0.875rem;
+    height: 0.875rem;
+    font-size: 0.875rem;
+  }
+
+  &:not(.p-disabled):not(.p-readonly) .p-rating-option:hover .p-rating-icon {
+    color: var(--p-yellow-600) !important;
+  }
+
+  &.p-readonly .p-rating-option {
+    cursor: unset !important;
+  }
+}
+
+.custom-dy-dialog {
+  .p-dialog-header {
+    border-bottom: 1px solid var(--p-gray-200);
+    padding: 0.75rem 1rem;
+  }
+
+  .p-dialog-content {
+    width: 100%;
+    min-height: 20vh;
+  }
+}
+
+.input-error {
+  border-color: var(--p-red-400) !important;
+}
+
+.custom-p-table {
+  .p-datatable-scrollable-table {
+    padding-right: .25rem;
+  }
+  .p-datatable-table-container {
+    padding-bottom: 0.25rem !important;
+  }
+  
+  tbody {
+    tr:nth-child(even) {
+      background: var(--p-gray-50);
+    }
+  }
+}
+
+// p-button
+.custom-p-button {
+  .p-button {
+    color: #fff;
+    background: var(--main-700);
+    border: 1px solid var(--main-700);
+
+    .p-button-text {
+      color: var(--btn-main);
+    }
+  }
+
+  .p-button:not(:disabled):hover {
+    background: var(--main-600);
+    border: 1px solid var(--main-600);
+  }
+
+  .p-button:not(:disabled):active {
+    color: var(--main-63);
+    background: var(--btn-main-active);
+  }
+
+  .p-button-text:not(:disabled):hover {
+    color: var(--btn-main-hover);
+    background: var(--main-63);
+  }
+  
+  .p-button-text:not(:disabled):active{
+    color: var(--btn-main);
+    background: var(--btn-main-active);
+  }
+
+  .p-button-outlined {
+    color: var(--main-700);
+    background: var(--main-25);
+    border: 1px solid var(--main-600);
+  }
+
+  .p-button-outlined:not(:disabled):hover {
+    color: var(--main-63);
+  }
+}
+
+.custom-p-button-text {
+  .p-button {
+    color: var(--main-500);
+    background: transparent;
+    border: 1px solid transparent;
+    padding: .5rem;
+  }
+
+  .p-button:not(:disabled):hover {
+    background: var(--main-75);
+    border: 1px solid transparent;  
+    color: var(--main-500);
+  }
+
+  .p-button-text:not(:disabled):active {
+    color: var(--main-700);
+    background: transparent;
+  }
+}
+
+// p-button 
+.p-button {
+  &.p-button-info {
+    background: #326fd1 !important;
+    border: 1px solid 
+  }
+  &.p-button-text.p-button-info {
+    background-color: transparent !important;
+    color: #326fd1 !important;
+  }
+}
+
+// p-datepicker
+.custom-p-datepicker {
+  .p-datepicker-day-selected,
+  .p-datepicker-today > .p-datepicker-day-selected {
+    background: var(--main-600);
+  }
+
+  .p-datepicker-day-selected-range, 
+  .p-datepicker-today > .p-datepicker-day-selected-range {
+    color: var(--main-600);    
+    background: var(--main-63);
+  }
+
+  .p-datepicker-input {
+    width: 100%;
+  }
+
+}
+
+// p-inputtext p-select p-textarea :focus
+.p-inputtext:enabled:focus, .p-select:not(.p-disabled).p-focus, .p-textarea:enabled:focus {
+  border-color: var(--btn-main-hover) !important;
+}
+
+// p-overlay
+p-overlay {
+  .p-select-option.p-select-option-selected.p-focus,
+  .p-select-option.p-select-option-selected {
+    color: var(--main-700);
+    background: var(--main-75);
+  }
+}
+
+// mobile menu
+.custom-drawer-menu.p-drawer {
+  border: 0;
+  border-radius: 2px;
+
+  .p-drawer-header {
+    border-bottom: 1px solid #fff;
+  }
+  .p-drawer-header, .p-drawer-content {
+    color: #fff;
+    background: var(--menu-bg) !important;
+  }
+
+  .p-button-text.p-button-secondary {
+    color: #fff;
+  }
+}
+
+// p--card
+.custom-p-card {
+  .p-card-body {
+    padding: 1rem 1.25rem;
+  }
+}
+
+// p-inputNumber 
+.custom-p-inputNumber {
+  .p-inputnumber-input {
+    width: 100%;
+  }
+}
+
+// p-slider
+.custom-p-slider {
+  &.p-slider {
+    background: var(--p-surface-300);
+  } 
+}

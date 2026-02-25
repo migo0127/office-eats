@@ -1,0 +1,290 @@
+<section id="group-form-section">
+  <div class="flex align-items-center gap-2 mb-4">
+    <div
+      class="cursor-pointer hover:underline text-color-secondary flex align-items-center"
+      (click)="goBack()"
+    >
+      <i class="pi pi-arrow-left mr-2"></i>
+      <span>返回團購列表</span>
+    </div>
+  </div>
+
+  <div class="flex justify-content-between align-items-end mb-3">
+    <h1 class="text-2xl font-bold m-0 text-700">
+      {{ isEdit() ? '編輯團購' : '發起新團購' }}
+      @if (isCopy()) {
+        <p-tag value="複製模式" severity="info" class="ml-2" />
+      }
+    </h1>
+  </div>
+
+  <p-card class="shadow-1 border-round mb-4 overflow-hidden border-none custom-p-card">
+    <ng-template pTemplate="header">
+      <div class="bg-main-700 p-3 text-white font-bold">基本資訊</div>
+    </ng-template>
+
+    @let g = groupData();
+    <div class="p-3 flex flex-column gap-4 mt-1">
+      <div class="flex flex-column md:flex-row gap-3">
+        <div class="flex-1">
+          <label class="font-bold block mb-2 text-700">團購名稱</label>
+          <input
+            pInputText
+            [(ngModel)]="g.groupName"
+            placeholder="例如：週五下午茶"
+            class="w-full custom-p-button"
+          />
+        </div>
+        <div class="flex-1">
+          <label class="font-bold block mb-2 text-700">類型</label>
+          <p-select
+            [options]="typeOptions"
+            [(ngModel)]="g.category"
+            optionLabel="label"
+            optionValue="value"
+            placeholder="選擇類型"
+            class="w-full custom-p-select"
+          />
+        </div>
+        <div class="flex-1">
+          <label class="font-bold block mb-2 text-700">發起人</label>
+          <input pInputText [(ngModel)]="g.creator" disabled class="w-full custom-p-button" />
+        </div>
+      </div>
+
+      <div class="flex flex-column md:flex-row gap-3">
+        <div class="flex-1">
+          <label class="font-bold block mb-2 text-700">開始時間</label>
+          <p-datePicker
+            [(ngModel)]="g.startTime"
+            [showTime]="true"
+            hourFormat="24"
+            [showSeconds]="false"
+            class="w-full custom-p-datepicker"
+            appendTo="body"
+          />
+        </div>
+        <div class="flex-1">
+          <label class="font-bold block mb-2 text-primary">截止點餐時間</label>
+          <p-datePicker
+            [(ngModel)]="g.endTime"
+            [showTime]="true"
+            hourFormat="24"
+            [showSeconds]="false"
+            class="w-full custom-p-datepicker"
+            appendTo="body"
+          />
+        </div>
+        <div class="flex-1">
+          <label class="font-bold block mb-2 text-700">預計送達時間</label>
+          <p-datePicker
+            [(ngModel)]="g.estimateTime"
+            [showTime]="true"
+            hourFormat="24"
+            [showSeconds]="false"
+            class="w-full custom-p-datepicker"
+            appendTo="body"
+          />
+        </div>
+      </div>
+
+      <div class="flex flex-column">
+        <label class="font-bold block mb-2 text-orange-600">選擇商家</label>
+        <p-multiSelect
+          [options]="shops()"
+          [(ngModel)]="selectedShopIds"
+          optionLabel="shopName"
+          optionValue="sId"
+          placeholder="請選擇一至多個商家"
+          display="chip"
+          [maxSelectedLabels]="isMobile() ? 4 : 5"
+          (onChange)="loadSelectedShopsData()"
+          class="w-full custom-p-multiSelect"
+          appendTo="body"
+        />
+      </div>
+
+      <div class="flex flex-column">
+        <label class="font-bold block mb-2 text-700">團購備註</label>
+        <textarea
+          pTextarea
+          [(ngModel)]="g.groupNote"
+          rows="2"
+          class="w-full custom-p-textarea"
+          placeholder="每人上限 150 元..."
+        ></textarea>
+      </div>
+    </div>
+  </p-card>
+
+  <!-- 商家資料 -->
+  @if (selectedShops().length > 0) {
+    <p-card class="shadow-1 border-round mb-4 overflow-hidden border-none custom-p-card">
+      <ng-template pTemplate="header">
+        <div class="bg-main-700 p-3 text-white font-bold">商家資訊</div>
+      </ng-template>
+
+      <p-table
+        [value]="selectedShops()"
+        [scrollable]="true"
+        [scrollHeight]="dynamicScrollHeight()"
+        dataKey="sId"
+        [expandedRowKeys]="expandedRows"
+        class="mt-2 pr-1 md:mb-1 custom-p-table"
+        >
+        <ng-template #header>
+          <tr>
+            <th style="width: 3rem"></th>
+            <th style="width: 3rem" class="text-center">#</th>
+            <th>商家名稱</th>
+            <th pSortableColumn="shopTags">標籤  <p-sortIcon field="shopTags" /></th>
+            <th pSortableColumn="businessHours">營業時間 <p-sortIcon field="businessHours" /></th>
+            <th>公休日</th>
+            <th [style.minWidth]="'15rem'">地址</th>
+            <th>電話</th>
+            <th [style.minWidth]="isMobile() ? '10rem' : '6rem'">備註</th>
+          </tr>
+        </ng-template>
+
+        <ng-template #body let-shop let-rowIndex="rowIndex" let-expanded="expanded">
+          <tr class="hover:bg-blue-50/50">
+            <td>
+              <p-button
+                type="button"
+                [pRowToggler]="shop"
+                [text]="true"
+                [rounded]="true"
+                [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+              />
+            </td>
+            <td class="text-center">{{ rowIndex + 1 }}</td>
+            <!-- 商家名稱 -->
+            <td class="font-bold">{{ shop.shopName }}</td>
+            <!-- 標籤 -->
+            <td>
+              <div class="flex gap-2 flex-wrap">
+                @for (tag of shop.shopTags; track tag) {
+                  @if (tagsDisplay[tag]) {
+                    <p-tag
+                      [value]="tagsDisplay[tag].label"
+                      [severity]="tagsDisplay[tag].value"
+                      class="text-xs"
+                    />
+                  } @else {
+                    <p-tag [value]="tag" severity="secondary" class="text-xs" />
+                  }
+                }
+              </div>
+            </td>
+            <!-- 營業時間 -->
+            <td>
+              <div class="flex flex-column justify-content-center gap-1 text-blue-700">
+                @for (time of shop.businessHours; track $index) {
+                  <span>{{ time }}</span>
+                }
+              </div>
+            </td>
+            <!-- 公休日 -->
+            <td>
+              <div>
+                @for (off of shop.offDays; track $index; let last = $last) {
+                  <span>{{ dayLabels[off] }}</span>
+                  @if (!last) {
+                    <span>、</span>
+                  }
+                }
+              </div>
+            </td>
+            <!-- 地址 -->
+            <td class="text-sm">
+              <span
+                class="white-space-normal"
+                style="word-break: break-all"
+                >
+                {{ shop.address }}
+              </span>
+            </td>
+            <!-- 電話 -->
+            <td>{{ shop.tel }}</td>
+            <!-- 備註 -->
+            <td class="text-orange-600 w-15rem white-space-normal">{{ shop.note }}</td>
+          </tr>
+        </ng-template>
+        <ng-template #expandedrow let-shop>
+          <tr class="expandedrow-row">
+            <td colspan="11">
+              <div class="py-3 px-4 border-round shadow-inset">
+                <div class="flex align-items-center justify-content-between mb-2 px-2">
+                  <div class="flex align-items-center mb-2">
+                    <span class="font-bold text-lg">商品明細</span>
+                  </div>
+                  <p-tag [value]="'共 ' + (shop.menu?.length || 0) + ' 項'" severity="info" />
+                </div>
+
+                <p-table [value]="shop.menu" class="p-datatable-sm shadow-1">
+                  <ng-template #header>
+                    <tr>
+                      <th style="width: 4rem" class="text-center">#</th>
+                      <th>商品名稱</th>
+                      <th pSortableColumn="disabled">狀態 <p-sortIcon field="disabled" /></th>
+                      <th pSortableColumn="price">價格 <p-sortIcon field="price" /></th>
+                      <th>備註</th>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template #body let-item let-index="rowIndex">
+                    <tr>
+                      <td class="text-center">{{ index + 1 }}</td>
+                      <!-- 商品名稱 -->
+                      <td class="font-semibold text-700">{{ item.productName }}</td>
+                      <!-- 狀態 -->
+                      <td>
+                        @if (item.disabled) {
+                          <p-tag value="暫停供應" severity="danger" />
+                        } @else {
+                          <p-tag value="供應中" severity="success" />
+                        }
+                      </td>
+                      <!-- 價格 -->
+                      <td class="text-orange-600 font-bold">${{ item.price | number }}</td>
+                      <!-- 備註 -->
+                      <td class="text-500">{{ item.note }}</td>
+                    </tr>
+                  </ng-template>
+
+                  <ng-template #emptymessage>
+                    <tr>
+                      <td colspan="5" class="text-center py-4 text-500">
+                        此商家目前沒有提供商品清單，請先至商家管理進行設定
+                      </td>
+                    </tr>
+                  </ng-template>
+                </p-table>
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-card>
+  }
+
+  <div class="flex justify-content-end gap-3 mt-6 pb-8">
+    <p-button
+      [label]="isEdit() ? '儲存變更' : '建立團購'"
+      class="custom-p-button"
+      (click)="onUpdateAll()"
+    />
+
+    @if(isEdit()) {
+      <p-button 
+        class="custom-p-button"
+        label="取消團購" 
+        severity="secondary" 
+        [outlined]="true" 
+        type="button" 
+        styleClass="px-4"
+        (onClick)="onCancel()" 
+        />
+    }
+  </div>
+</section>

@@ -1,0 +1,54 @@
+@use './color';
+
+// teal-2
+.theme-admin {
+  --main-25: var(--teal-2-25);
+  --main-50: var(--teal-2-50);
+  --main-63: var(--teal-2-63);
+  --main-75: var(--teal-2-75);
+  --main-100: var(--teal-2-100);
+  --main-200: var(--teal-2-200);
+  --main-300: var(--teal-2-300);
+  --main-400: var(--teal-2-400);
+  --main-500: var(--teal-2-500);
+  --main-600: var(--teal-2-600);
+  --main-700: var(--teal-2-700);
+  --menu-bg: #25655E;
+  --menu-item-hover: rgba(17, 156, 141, .5);
+  --menu-item-active: var(--main-600);
+  --frame-bg-0: rgba(216, 237, 235, .6);
+  --frame-bg-100: var(--main-200);
+  --btn-main: var(--main-400);
+  --btn-main-hover: var(--main-500);
+  --btn-main-active: var(--main-600);
+  --btn-sec: var(--main-500);
+  --btn-sce-hover: rgba(154, 224, 217, .5);
+  --svg-icon-main: invert(56%) sepia(54%) saturate(616%) hue-rotate(124deg) brightness(94%) contrast(93%);
+}
+
+// blue
+.theme-customer {
+  --main-25: var(--blue-25);
+  --main-50: var(--blue-50);
+  --main-63: var(--blue-63);
+  --main-75: var(--blue-75);
+  --main-100: var(--blue-100);
+  --main-200: var(--blue-200);
+  --main-300: var(--blue-300);
+  --main-400: var(--blue-400);
+  --main-500: var(--blue-500);
+  --main-600: var(--blue-600);
+  --main-700: var(--blue-700);
+  --menu-bg: #295295;
+  --menu-item-hover: rgba(59, 130, 246, .5);
+  --menu-item-active: var(--main-500);
+  --frame-bg-0: rgba(221, 232, 251, .6);
+  --frame-bg-100: var(--main-200);
+  --btn-main: var(--main-400);
+  --btn-main-hover: var(--main-500);
+  --btn-main-active: var(--main-600);
+  --btn-sec: var(--main-500);
+  --btn-sce-hover: rgba(171, 201, 251, .5);
+  --svg-icon-main: invert(73%) sepia(94%) saturate(5964%) hue-rotate(205deg) brightness(105%) contrast(93%)
+}
+

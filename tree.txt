@@ -1,0 +1,232 @@
+chase-office-eats
+├── README.md
+├── angular.json
+├── package-lock.json
+├── package.json
+├── public
+│   └── favicon.ico
+├── src
+│   ├── app
+│   │   ├── app.config.ts
+│   │   ├── app.html
+│   │   ├── app.routes.ts
+│   │   ├── app.scss
+│   │   ├── app.ts
+│   │   ├── auth
+│   │   │   └── login
+│   │   │       ├── login-imports.ts
+│   │   │       ├── login.html
+│   │   │       ├── login.scss
+│   │   │       └── login.ts
+│   │   ├── core
+│   │   │   ├── config
+│   │   │   │   ├── auth-storage.config.ts
+│   │   │   │   ├── error-code.ts
+│   │   │   │   ├── error-side-effect.ts
+│   │   │   │   ├── routes.config.ts
+│   │   │   │   └── z-index.config.ts
+│   │   │   ├── guards
+│   │   │   │   ├── admin.guard.ts
+│   │   │   │   ├── auth.guard.ts
+│   │   │   │   └── login.guard.ts
+│   │   │   ├── interceptors
+│   │   │   │   ├── auth.interceptor.ts
+│   │   │   │   ├── error.interceptor.ts
+│   │   │   │   ├── loading.interceptor.ts
+│   │   │   │   ├── mock.interceptor.ts
+│   │   │   │   └── response.interceptor.ts
+│   │   │   ├── models
+│   │   │   │   ├── api-response.model.ts
+│   │   │   │   └── error-config.model.ts
+│   │   │   ├── services
+│   │   │   │   ├── auth.service.ts
+│   │   │   │   ├── http.service.ts
+│   │   │   │   └── loading.service.ts
+│   │   │   └── tokens
+│   │   │       └── http.tokens.ts
+│   │   ├── pages
+│   │   │   ├── dashboard
+│   │   │   │   ├── dashboard-imports.ts
+│   │   │   │   ├── dashboard.html
+│   │   │   │   ├── dashboard.scss
+│   │   │   │   ├── dashboard.service.ts
+│   │   │   │   └── dashboard.ts
+│   │   │   ├── group-manage
+│   │   │   │   ├── group-center
+│   │   │   │   │   ├── group-center-imports.ts
+│   │   │   │   │   ├── group-center.html
+│   │   │   │   │   ├── group-center.scss
+│   │   │   │   │   ├── group-center.ts
+│   │   │   │   │   ├── group-form
+│   │   │   │   │   │   ├── group-form-imports.ts
+│   │   │   │   │   │   ├── group-form.html
+│   │   │   │   │   │   ├── group-form.scss
+│   │   │   │   │   │   └── group-form.ts
+│   │   │   │   │   └── group-info
+│   │   │   │   │       ├── group-info-imports.ts
+│   │   │   │   │       ├── group-info.html
+│   │   │   │   │       ├── group-info.scss
+│   │   │   │   │       └── group-info.ts
+│   │   │   │   ├── group-manage.html
+│   │   │   │   ├── group-manage.routes.ts
+│   │   │   │   ├── group-manage.scss
+│   │   │   │   ├── group-manage.ts
+│   │   │   │   └── user-balance
+│   │   │   │       ├── deposit-dialog
+│   │   │   │       │   ├── deposit-dialog-imports.ts
+│   │   │   │       │   ├── deposit-dialog.html
+│   │   │   │       │   ├── deposit-dialog.scss
+│   │   │   │       │   └── deposit-dialog.ts
+│   │   │   │       ├── user-balance-imports.ts
+│   │   │   │       ├── user-balance.html
+│   │   │   │       ├── user-balance.scss
+│   │   │   │       └── user-balance.ts
+│   │   │   ├── header
+│   │   │   │   ├── header-imports.ts
+│   │   │   │   ├── header.html
+│   │   │   │   ├── header.model.ts
+│   │   │   │   ├── header.scss
+│   │   │   │   ├── header.service.ts
+│   │   │   │   └── header.ts
+│   │   │   ├── layout
+│   │   │   │   ├── layout-imports.ts
+│   │   │   │   ├── layout.html
+│   │   │   │   ├── layout.scss
+│   │   │   │   └── layout.ts
+│   │   │   ├── menu
+│   │   │   │   ├── menu-imports.ts
+│   │   │   │   ├── menu.html
+│   │   │   │   ├── menu.scss
+│   │   │   │   └── menu.ts
+│   │   │   ├── order
+│   │   │   │   ├── order-main
+│   │   │   │   │   ├── order-main-imports.ts
+│   │   │   │   │   ├── order-main.html
+│   │   │   │   │   ├── order-main.scss
+│   │   │   │   │   └── order-main.ts
+│   │   │   │   ├── order-summary
+│   │   │   │   │   ├── order-summary-imports.ts
+│   │   │   │   │   ├── order-summary.html
+│   │   │   │   │   ├── order-summary.model.ts
+│   │   │   │   │   ├── order-summary.scss
+│   │   │   │   │   └── order-summary.ts
+│   │   │   │   ├── order.html
+│   │   │   │   ├── order.routes.ts
+│   │   │   │   ├── order.scss
+│   │   │   │   ├── order.service.ts
+│   │   │   │   ├── order.ts
+│   │   │   │   └── store-list
+│   │   │   │       ├── store-list.html
+│   │   │   │       ├── store-list.scss
+│   │   │   │       └── store-list.ts
+│   │   │   ├── shop-manage
+│   │   │   │   ├── product-quick-edit
+│   │   │   │   │   ├── product-quick-edit-import.ts
+│   │   │   │   │   ├── product-quick-edit.html
+│   │   │   │   │   ├── product-quick-edit.scss
+│   │   │   │   │   └── product-quick-edit.ts
+│   │   │   │   ├── shop-info
+│   │   │   │   │   ├── shop-info-imports.ts
+│   │   │   │   │   ├── shop-info.html
+│   │   │   │   │   ├── shop-info.scss
+│   │   │   │   │   └── shop-info.ts
+│   │   │   │   ├── shop-list
+│   │   │   │   │   ├── shop-list-import.ts
+│   │   │   │   │   ├── shop-list.html
+│   │   │   │   │   ├── shop-list.scss
+│   │   │   │   │   └── shop-list.ts
+│   │   │   │   ├── shop-manaage.routes.ts
+│   │   │   │   ├── shop-manage.html
+│   │   │   │   ├── shop-manage.scss
+│   │   │   │   └── shop-manage.ts
+│   │   │   └── user-manage
+│   │   │       ├── my-orders
+│   │   │       │   ├── my-orders-imports.ts
+│   │   │       │   ├── my-orders.html
+│   │   │       │   ├── my-orders.scss
+│   │   │       │   ├── my-orders.service.ts
+│   │   │       │   └── my-orders.ts
+│   │   │       ├── transactiontory-history
+│   │   │       │   ├── transactiontory-history-imports.ts
+│   │   │       │   ├── transactiontory-history.html
+│   │   │       │   ├── transactiontory-history.scss
+│   │   │       │   └── transactiontory-history.ts
+│   │   │       ├── user-manage.html
+│   │   │       ├── user-manage.routes.ts
+│   │   │       ├── user-manage.scss
+│   │   │       └── user-manage.ts
+│   │   └── shared
+│   │       ├── components
+│   │       │   ├── comments
+│   │       │   │   ├── comments-imports.ts
+│   │       │   │   ├── comments.html
+│   │       │   │   ├── comments.scss
+│   │       │   │   └── comments.ts
+│   │       │   ├── diff-time-display
+│   │       │   │   ├── diff-time-display.html
+│   │       │   │   ├── diff-time-display.scss
+│   │       │   │   └── diff-time-display.ts
+│   │       │   ├── json-dialog
+│   │       │   │   ├── json-dialog.html
+│   │       │   │   ├── json-dialog.scss
+│   │       │   │   └── json-dialog.ts
+│   │       │   ├── status-card
+│   │       │   │   ├── status-card-imports.ts
+│   │       │   │   ├── status-card.html
+│   │       │   │   ├── status-card.scss
+│   │       │   │   └── status-card.ts
+│   │       │   └── toast
+│   │       │       ├── toast-imports.ts
+│   │       │       ├── toast.html
+│   │       │       ├── toast.scss
+│   │       │       └── toast.ts
+│   │       ├── constants
+│   │       │   └── storage-keys.ts
+│   │       ├── mocks
+│   │       │   ├── dashboard-mock.ts
+│   │       │   ├── header-mock.ts
+│   │       │   ├── index.ts
+│   │       │   ├── my-orders-mock.ts
+│   │       │   ├── order-mock.ts
+│   │       │   └── util-function.ts
+│   │       ├── models
+│   │       │   ├── auth.model.ts
+│   │       │   ├── comments.model.ts
+│   │       │   ├── common.model.ts
+│   │       │   ├── group-buy-common.model.ts
+│   │       │   ├── status-card.model.ts
+│   │       │   ├── toast.model.ts
+│   │       │   └── user-balance.model.ts
+│   │       ├── pipes
+│   │       │   ├── duration.pipe.ts
+│   │       │   └── sanitize.pipe.ts
+│   │       ├── services
+│   │       │   ├── common.service.ts
+│   │       │   ├── date-range.service.ts
+│   │       │   ├── device.service.ts
+│   │       │   ├── diff-time.service.ts
+│   │       │   ├── dynamic-dialog.service.ts
+│   │       │   ├── json-data.service.ts
+│   │       │   ├── storage.service.ts
+│   │       │   └── toast.service.ts
+│   │       └── shared-imports.ts
+│   ├── assets
+│   │   └── img
+│   │       ├── login.jpg
+│   │       ├── logo-4.png
+│   │       └── logo-5.png
+│   ├── environments
+│   │   ├── environment.dev.ts
+│   │   ├── environment.prod.ts
+│   │   └── environment.ts
+│   ├── index.html
+│   ├── main.ts
+│   ├── styles
+│   │   ├── _color.scss
+│   │   ├── _themes.scss
+│   │   └── main.scss
+│   └── styles.scss
+├── tree.txt
+├── tsconfig.app.json
+├── tsconfig.json
+└── tsconfig.spec.json

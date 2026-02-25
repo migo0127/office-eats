@@ -1,0 +1,202 @@
+<section id="user-balance-section">
+  <div
+    class="flex flex-column md:flex-row justify-content-center md:justify-content-between align-items-start md:align-items-center gap-3"
+  >
+    <!-- 日期 & 帳號狀態 -->
+    <div
+      class="flex flex-column md:flex-row justify-content-center md:justify-content-start align-items-start md:align-items-center gap-3"
+      >
+      <!-- 帳號狀態 -->
+      <div class="flex justify-content-center align-items-center gap-3">
+        <!-- 帳號狀態 -->
+        <p-floatlabel variant="on">
+          <p-select
+            [options]="statusOpts"
+            [(ngModel)]="selectedStatus"
+            id="accStatus"
+            optionLabel="label"
+            optionValue="value"
+            class="w-full custom-p-select"
+            />
+          <label for="accStatus">帳號狀態：</label>
+        </p-floatlabel>
+      </div>
+      <!-- 使用者 -->
+      <div class="flex justify-content-center align-items-center gap-3">
+        <!-- 使用者 -->
+        <p-floatlabel variant="on">
+          <p-multiselect
+            [options]="userOptions()"
+            [(ngModel)]="selectedUsers"
+            display="chip"
+            [maxSelectedLabels]="3"
+            optionLabel="label"
+            optionValue="value"
+            id="users"
+            class="custom-p-multiselect"
+            style="min-width: 10rem;"
+            />
+          <label for="tags" class="text-500">使用者：</label>
+        </p-floatlabel>
+      </div>
+      <!-- 餘額 -->
+      <div class="flex flex-column md:flex-row  md:justify-content-center align-items-start md:align-items-center gap-3">
+        <!-- 餘額 -->
+        <div 
+          class="flex flex-rowjustify-content-start align-items-center gap-3" 
+          >
+          <div 
+            class="flex align-items-center flex-1 nowrap"
+            style="width: 9.25rem;"
+            >
+            <label for="rangeBlance" class="text-500 mr-1">餘額：</label>
+            <span class="text-main-700 font-bold">
+              ${{ rangeBlance()[0] | number }} - ${{ rangeBlance()[1] | number }}
+            </span>
+          </div>
+          
+          <p-slider 
+            [(ngModel)]="rangeBlance" 
+            [range]="true" 
+            [min]="0"
+            [max]="5000"
+            [step]="50"
+            id="rangeBlance"
+            class="custom-p-slider"
+            style="width: 10rem;"
+            />
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-content-end align-items-center w-full">
+      <!-- 批次匯入 -->
+      <p-button
+        label="批次匯入"
+        icon="pi pi-file-import"
+        [text]="true"
+        class="custom-p-button-text"
+        (click)="batchImportBlances()"
+        />
+      <!-- 批次匯出 -->
+      <p-button
+        label="批次匯出"
+        icon="pi pi-file-export"
+        [text]="true"
+        class="custom-p-button-text"
+        (click)="batcchExportBlances()"
+        />
+    </div>
+  </div>
+
+  <p-table
+    [value]="filterUsers()"
+    [scrollable]="true"
+    [scrollHeight]="dynamicScrollHeight()"
+    class="mt-2 pr-1 md:mb-1 custom-p-table"
+    dataKey="uId"
+    [expandedRowKeys]="expandedRows"
+    >
+    <ng-template #header>
+      <tr>
+        <th style="width: 3rem"></th>
+        <th style="width: 3rem" class="text-center">#</th>
+        <th>UID</th>
+        <th>名稱</th>
+        <th>帳號</th>
+        <th pSortableColumn="balance" class="text-right">餘額 <p-sortIcon field="balance" /></th>
+        <th pSortableColumn="updatedAt">最後更新 <p-sortIcon field="updatedAt" /></th>
+        <th>備註</th>
+        <th style="width: 8rem" class="text-center">狀態</th>
+        <th style="width: 5rem" class="text-center">操作</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-user let-rowIndex="rowIndex" let-expanded="expanded">
+      <tr [ngClass]="{ 'bg-gray-50': !user.isActive }">
+        <td>
+          <p-button
+            type="button"
+            [pRowToggler]="user"
+            [text]="true"
+            [rounded]="true"
+            [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          />
+        </td>
+        <td class="text-center">{{ rowIndex + 1 }}</td>
+        <td>{{ user.uId }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.email }}</td>
+        <td class="text-right">
+          <span
+            class="font-bold"
+            [ngClass]="{
+              'text-red-600': user.balance <= BlanceStatus.LOWER,
+              'text-orange-500': user.balance > BlanceStatus.LOWER && user.balance <= BlanceStatus.MIDDLE,
+              'text-green-600': user.balance > BlanceStatus.MIDDLE
+            }"
+            >
+            ${{ user.balance | number }}
+          </span>
+        </td>
+        <td>{{ user.updatedAt | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>{{ user.note || '-' }}</td>
+        <td class="text-center">
+          <p-tag
+            [severity]="user.isActive ? 'success' : 'danger'"
+            [value]="user.isActive ? '啟用' : '停用'"
+          />
+        </td>
+        <td class="text-center">
+          <p-button
+            icon="pi pi-ellipsis-v"
+            class="custom-p-button"
+            [text]="true"
+            severity="secondary"
+            (click)="openMenu($event, menu, user)"
+          />
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #expandedrow let-user>
+      <tr>
+        <td colspan="10" class="bg-blue-50/30 p-4">
+          <div class="surface-card border-round shadow-1 p-3">
+            <div class="flex justify-content-between align-items-center mb-3">
+              <h3 class="m-0 text-main-800">
+                最近三個月儲值紀錄
+              </h3>
+              <p-tag value="僅顯示 90 天內資料" severity="secondary" />
+            </div>
+
+            <p-table [value]="user.depositHistory || []" class="custom-p-table">
+              <ng-template #header>
+                <tr>
+                  <th>儲值時間</th>
+                  <th>金額</th>
+                  <th>儲值前額度</th>
+                  <th>儲值後額度</th>
+                </tr>
+              </ng-template>
+              <ng-template #body let-record>
+                <tr>
+                  <td>{{ record.transactionTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+                  <td class="font-bold text-green-600">+ ${{ record.amount | number }}</td>
+                  <td class="text-500">${{ record.beforeBalance | number }}</td>
+                  <td class="font-bold">${{ record.afterBalance | number }}</td>
+                </tr>
+              </ng-template>
+              <ng-template #emptymessage>
+                <tr>
+                  <td colspan="4" class="text-center p-4 text-500">近期無儲值紀錄</td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-menu #menu [model]="menuItems()" [popup]="true" appendTo="body" />
+</section>

@@ -1,0 +1,88 @@
+
+#menu-div {
+  height: 100%;
+  background: var(--menu-bg);
+  /* 選單高亮 */
+  .active-link, .active-link-sub {
+    font-weight: 600;
+    background-color: var(--menu-item-active);
+  }
+  a {
+    color: #fff;
+
+    &:hover {
+      background-color: var(--menu-item-hover);
+    }
+  }
+
+  /* 子菜單基礎樣式 */
+  .submenu-container {
+    display: none;
+    flex-direction: column;
+    gap: 0.25rem;
+
+    &:not(.show-expanded) {
+      // 1. 統一文字顏色與動畫 (a 標籤與子節點)
+      a, .active-link-sub {
+        color: var(--main-700);
+        transition: background-color 0.2s ease;
+      }
+
+      // 2. 處理選中狀態 (Active)
+      &.active-link, 
+      .active-link-sub {
+        background-color: var(--main-100);
+        border-radius: 8px;
+      }
+
+      // 3. 處理 Hover (排除掉已經選中的子項目)
+      a:not(.active-link-sub):hover {
+        background-color: var(--main-75);
+      }
+    }
+  }
+
+  /* 主菜單：展開狀態下的顯示 */
+  .show-expanded {
+    display: flex;
+    margin-left: 1rem;
+    margin-top: 0.25rem;
+    border-left: 1px solid var(--main-63);
+  }
+
+  /* 主菜單：收合狀態下的彈出 (Overlay) */
+  .show-collapsed-overlay {
+    /* 初始狀態：隱藏在右側 */
+    display: none; 
+    position: absolute;
+    left: 100%; 
+    top: 0;
+    width: 12rem;
+    background: white;
+    padding: 0.5rem;
+    margin-left: 0.5rem;
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--p-blue-50);
+    z-index: var(--zIdx-dropdown);
+
+    /* 建立連接: 讓滑鼠從父項移過去時，子選單 (Overlay) 不會消失 */
+    &::before {
+      content: '';
+      position: absolute;
+      /* 往左延伸蓋住 margin 的空隙 */
+      left: -15px; 
+      top: 0;
+      z-index: var(--zIdx-dropdown);
+      width: 15px;
+      height: 100%;
+      /* 它是透明的，但能感應滑鼠 */
+      background: transparent; 
+    }
+  }
+
+  /* 當滑鼠移過「收合狀態」的父項時，顯示彈出選單 */
+  .menu-item-group:hover .show-collapsed-overlay {
+    display: flex;
+  }
+}

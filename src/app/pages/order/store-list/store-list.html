@@ -1,0 +1,84 @@
+<section id="store-list-section">
+  @for (store of stores(); track store.shop.sId) {
+    <!-- p-panel 商家名稱 -->
+    <p-panel [header]="store.shop.shopName" [toggleable]="true" class="mb-4 shadow-1">
+      <div class="flex flex-column gap-2">
+
+        @for (item of store.shop.menu; track item.pId) {
+          @let qty = cartMap().get(item.pId) || 0;
+
+          <div class="flex justify-content-between align-items-center p-2 hover:surface-100 border-round transition-duration-200">
+            <div class="flex align-items-center gap-3">
+              <!-- 商品圖片 -->
+              <div class="item-image">
+                <img [src]="'https://placehold.co/100x100?text=' + item.productName" [alt]="item.productName" />
+              </div>
+
+              <!-- 商品資訊區 -->
+              <div>
+                <!-- 品名 -->
+                <div class="flex flex-column md:flex-row align-items-start md:align-items-center gap-1 md:gap-2">
+                  <span  class="font-bold text-md md:text-lg">
+                    {{ item.productName }}
+                  </span>
+                  <div class="flex align-items-center gap-2">
+                    <!-- 商品星星 -->
+                    <p-rating
+                      class="custom-rating"
+                      [ngModel]="(item?.productRating || 0)"
+                      readonly="true"
+                    />
+                    <!-- 商品評論數 -->
+                    <span
+                      class="text-500"
+                      [class.cursor-pointer]="item.commentCount > 0"
+                      [class.hover:underline]="item.commentCount > 0"
+                      (click)="checkComment(store.shop.sId, item)"
+                      >
+                      ({{ item.commentCount || 0 }})
+                    </span>
+                  </div>
+                </div>
+                <div class="text-orange-600 font-semibold text-md mt-1">
+                  $ {{ item.price | number: '1.0-0' }}
+                </div>
+                <!-- 商家備註 -->
+                @if (item.note) {
+                  <div class="text-gray-500 text-sm mt-1">
+                    {{ item.note }}
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- 減 -->
+            <div class="flex align-items-center gap-2 ml-1">
+              @if (qty > 0) {
+                <p-button
+                  class="custom-p-button"
+                  icon="pi pi-minus"
+                  [rounded]="true"
+                  [outlined]="true"
+                  severity="secondary"
+                  size="small"
+                  (onClick)="remove.emit(item)"
+                />
+                <span class="font-bold text-xl min-w-1rem text-center">{{ qty }}</span>
+              }
+
+              <!-- 加 -->
+              <p-button
+                class="custom-p-button"
+                icon="pi pi-plus"
+                [rounded]="true"
+                size="small"
+                [disabled]="item.disabled"
+                (onClick)="add.emit({ item, sId: store.shop.sId })"
+              />
+            </div>
+          </div>
+        }
+      </div>
+    </p-panel>
+  }
+</section>

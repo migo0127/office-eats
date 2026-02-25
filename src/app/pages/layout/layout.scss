@@ -1,0 +1,24 @@
+#layout-section {
+  main {
+    height: calc(100vh - 4.5rem);
+    .collapse-btn {
+      height: 3.5rem;
+      background: var(--menu-bg);
+    }
+  }
+
+  article {
+    background-color: var(--frame-bg-0); 
+    scroll-behavior: smooth;
+  }
+
+  aside {
+    background-color: var(--p-gray-50);
+    white-space: nowrap;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+    .menm-div {
+      height: calc(100% - 3.5rem);
+    }
+  }
+}

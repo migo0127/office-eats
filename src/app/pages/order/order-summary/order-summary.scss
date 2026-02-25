@@ -1,0 +1,66 @@
+:host ::ng-deep #order-summary-section {
+  .p-button.p-button-rounded {
+    .p-button-icon {
+      font-size: 1.5rem;
+    }
+  }
+
+  .p-inputtext {
+    padding: .25rem .25rem .25rem .5rem !important;
+  }
+
+  /* 讓 Badge 浮在按鈕右上角 */
+  .custom-badge.p-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    transform: translate(15%, -10%);
+  }
+
+  /* 確保 Drawer 內的彈性佈局能讓按鈕固定到底部 */
+  .p-drawer-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* 正在被拖拽的元素樣式 */
+  .cdk-drag-dragging {
+    transition: none !important; /* 拖拽時不要有延遲 */
+    cursor: grabbing;
+    opacity: 0.9;
+    transform: scale(1.1); /* 拖起來時稍微放大一點點，感覺更有手感 */
+  }
+
+  /* 釋放後回到定位的動畫 */
+  .cdk-drag-animating {
+    transition: transform 300ms cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+#order-summary-section {
+  .drag-rail {
+    width: 95%; 
+    height: 85%;
+    z-index: var(--zIdx-dropdown);
+    top: 5rem; 
+    right: 2.5%;
+    // border: 1px solid red;
+  }
+
+  .shopping-card-wrap {
+    bottom: 0; 
+    right: 1rem;
+  }
+
+  .cart-content {
+    min-height: 10rem;
+  }
+
+  // 行動版按鈕動畫
+  .p-button {
+    transition: transform 0.2s;
+    &:active {
+      transform: scale(0.9);
+    }
+  }
+}

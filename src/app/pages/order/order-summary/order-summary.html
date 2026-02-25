@@ -1,0 +1,114 @@
+<section id="order-summary-section">
+  <div class="hidden md:block surface-card p-4 shadow-2 border-round-xl border-1 border-200">
+    <h3 class="mt-0 flex align-items-center gap-2 text-gray-700">
+      <i class="pi pi-shopping-cart "></i>
+      已點餐明細
+    </h3>
+    <!-- 分割線 -->
+    <p-divider />
+    <!-- 餐點內容區 -->
+    <ng-container *ngTemplateOutlet="cartList; context: { scrollHeight: '30rem' }"></ng-container>
+    <!-- 分割線 -->
+    <p-divider />
+    <!-- PC 底部送出區 -->
+    <ng-container *ngTemplateOutlet="cartFooter; context: { btnLabel: '送出訂單' }"></ng-container>
+    </div>
+
+  <!-- RWD cart 拖拽小圓圖 region -->
+  <!-- drag-rail 為拖拽範為 -->
+  <div class="drag-rail md:hidden fixed pointer-events-none">
+    <div class="shopping-card-wrap absolute pointer-events-auto" cdkDrag cdkDragBoundary=".drag-rail">
+      <p-button
+        icon="pi pi-shopping-cart"
+        [rounded]="true"
+        severity="warn"
+        styleClass="w-4rem h-4rem shadow-4 border-2 border-white"
+        (click)="showDrawer.set(true)"
+        >
+      </p-button>
+      @if(totalCount() > 0){
+        <p-badge
+          [value]="totalCount().toString()"
+          severity="danger"
+          class="custom-badge"
+          />
+      }
+    </div>
+  </div>
+  <!-- RWD cart 拖拽小圓圖 #regionend -->
+
+  <!-- RWD 右側滑出區 -->
+  <p-drawer [(visible)]="showDrawer" position="right" styleClass="sm:w-25rem" header="🛒 已點餐明細">
+    <div class="flex flex-column h-full">
+      <div class="flex-grow-1">
+        <ng-container *ngTemplateOutlet="cartList; context: { scrollHeight: 'auto' }">
+        </ng-container>
+      </div>
+      <div class="mt-auto">
+        <p-divider />
+        <ng-container
+          *ngTemplateOutlet="cartFooter; context: { btnLabel: '確認送出' }"
+        ></ng-container>
+      </div>
+    </div>
+  </p-drawer>
+
+  <!-- 購物內容區 -->
+  <ng-template #cartList let-scrollHeight="scrollHeight">
+    <div
+      class="cart-content overflow-auto pr-1"
+      [style.max-height]="scrollHeight"
+      >
+      @for (item of orderedItems(); track item.pId; let i = $index) {
+        <div class="pb-2">
+          <!-- 品名、數量、價格 -->
+          <div class="flex justify-content-between align-items-center">
+            <span class="text-700">
+              {{ i + 1}}. {{ item.productName }}
+              <small class="text-500">x{{ item.quantity }}</small>
+            </span>
+            <div class="flex justify-content-end align-items-center gap-2">
+              <span class="font-bold text-orange-600">
+                $ {{ (item.price * item.quantity) | number: '1.0-0' }}
+              </span>
+              <i
+                class="pi pi-trash text-red-600 cursor-pointer"
+                (click)="handleDelete(item)" ></i>
+            </div>
+          </div>
+          <div class="text-right">
+            <!-- 客製備註 -->
+            <input
+              type="text"
+              pInputText
+              inputId="remark"
+              [(ngModel)]="item.remark"
+              placeholder="例如：去冰、不加蔥..."
+              class="w-full border-round-sm border-1 bg-gray-50 hover:bg-gray-100 transition-colors text-700 mt-1 p-1"
+              />
+          </div>
+        </div>
+      } @empty {
+        <div class="flex flex-column align-items-center justify-content-center text-500 py-5">
+          <span>空空如也...</span>
+        </div>
+      }
+    </div>
+  </ng-template>
+
+  <!-- PC 底部送出區 -->
+  <ng-template #cartFooter let-btnLabel="btnLabel">
+    <div class="flex justify-content-between text-2xl font-bold text-orange-600">
+      <span>總計</span>
+      <span>$ {{ totalPrice() }}</span>
+    </div>
+    <p-button
+      [label]="btnLabel"
+      styleClass="w-full"
+      class="w-full mt-3 block custom-p-button"
+      [disabled]="!leftTime()"
+      (click)="submit()"
+    />
+  </ng-template>
+</section>
+

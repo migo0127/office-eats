@@ -1,0 +1,126 @@
+<section id="product-quick-edit-section" class="pt-5 px-3">
+  <form [formGroup]="productForm" (ngSubmit)="onSave()">
+    <div class="flex flex-column gap-4">
+
+      <div class="flex align-items-center">
+        <label for="productName" class="font-semibold w-6rem">商品名稱</label>
+        <div class="flex-1">
+          <input 
+            pInputText 
+            id="productName" 
+            formControlName="productName" 
+            class="w-full custom-p-input"
+            [class.ng-invalid]="isInvalid('productName')" 
+            placeholder="請輸入商品名" 
+            />
+        </div>
+      </div>
+
+      <div class="flex align-items-center">
+        <label for="price" class="font-semibold w-6rem flex-shrink-0">商品單價</label>
+        <div class="flex-1">
+          <p-inputNumber 
+            id="price" 
+            formControlName="price" 
+            class="w-full custom-p-inputNumber" 
+            mode="decimal" 
+            [min]="0"
+            [maxFractionDigits]="0" 
+            inputId="price" 
+            />
+        </div>
+      </div>
+
+      <div class="flex align-items-center">
+        <label class="font-semibold w-6rem">供應狀態</label>
+        <div class="flex align-items-center gap-2">
+          <p-toggleSwitch 
+            formControlName="isAvailable" 
+            inputId="isAvailable" 
+            />
+          <span [ngClass]="productForm.get('isAvailable')?.value ? 'text-green-600' : 'text-red-500'">
+            {{ productForm.get('isAvailable')?.value ? '供應中' : '暫時停售' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="flex align-items-start">
+        <label class="font-semibold w-6rem mt-2">商品圖片</label>
+        <div class="flex-1 flex flex-column gap-3">
+          
+          @if (productForm.get('imageUrl')?.value) {
+            <div class="relative w-full md:w-12rem h-12rem border-round overflow-hidden shadow-1 group">
+              <img 
+                [src]="productForm.get('imageUrl')?.value" 
+                class="w-full h-full object-cover" 
+                alt="Product preview"
+              />
+              <div class="absolute top-0 right-0 p-2">
+                <p-button 
+                  icon="pi pi-times" 
+                  severity="danger" 
+                  [rounded]="true" 
+                  [raised]="true" 
+                  size="small"
+                  (onClick)="removeImage()"
+                  pTooltip="移除圖片"
+                  class="custom-p-button"
+                />
+              </div>
+            </div>
+          } @else {
+            <p-fileUpload 
+              mode="basic" 
+              chooseLabel="上傳圖片" 
+              chooseIcon="pi pi-upload"
+              name="demo[]" 
+              accept="image/jpg, image/jpeg, image/png"
+              maxFileSize="1000000" 
+              class="custom-p-fileUpload"
+              (onSelect)="onImageSelect($event)"
+              [auto]="true"
+            />
+            <small class="text-600">
+              支援 JPG, JPEG, PNG，檔案大小建議 1MB 以內
+            </small>
+          }
+          </div>
+      </div>
+
+      <div class="flex align-items-start">
+        <label for="note" class="font-semibold w-6rem mt-2">商品備註</label>
+        <textarea 
+          pInputTextarea 
+          id="note" 
+          formControlName="note" 
+          class="flex-1" 
+          rows="3" 
+          [maxlength]="150"
+          [autoResize]="true"
+          placeholder="選填，例如：份量大、最低2分糖"
+          >
+        </textarea>
+      </div>
+
+    </div>
+
+    <div class="flex justify-content-end gap-2 mt-6">
+      <p-button 
+        class="custom-p-button"
+        label="儲存變更" 
+        type="submit" 
+        [disabled]="productForm.invalid" 
+        />
+
+      <p-button 
+        class="custom-p-button"
+        label="取消" 
+        severity="secondary" 
+        [outlined]="true" 
+        type="button" 
+        styleClass="px-4"
+        (onClick)="onCancel()" 
+        />
+    </div>
+  </form>
+</section>

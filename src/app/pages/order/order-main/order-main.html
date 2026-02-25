@@ -1,0 +1,70 @@
+<section id="order-main-section">
+  <div class="text-color-secondary">
+    <div class="cursor-pointer hover:underline mb-3 min-w-max w-max" (click)="goToDashboard()">
+      <i class="pi pi-arrow-left mr-2"></i>
+      <span>返回今日團購</span>
+    </div>
+
+    @let order = orderData(); 
+    @if (order) {
+      <!-- 類型 & 結單時間 & 剩餘時間 -->
+      <div class="flex flex-column md:flex-row md:align-items-center gap-3 mb-3">
+        <!-- 類型 -->
+        <p-tag 
+          [value]="order.label" 
+          severity="secondary" 
+          [ngClass]="order.category + '-tag'" 
+          class="border-none" 
+        />
+        <!-- 結單時間 -->
+        <div class="flex flex-column md:flex-row gap-2">
+          <div class="flex align-items-center gap-1 text-sm md:text-base">
+            <i class="pi pi-clock mr-1"></i>
+            <span>結單時間：</span>
+            <span class="font-semibold">{{ order.endTime | date: 'yyyy-MM-dd HH:mm' }}</span>
+          </div>
+
+          <div class="hidden md:block text-300">|</div>
+
+          <!-- 剩餘時間 -->
+          <div class="flex align-items-center gap-1 text-sm md:text-base">
+            <span>收單剩餘時間：</span>
+            <span class="font-semibold text-primary text-xl">
+              <app-diff-time-display [endTime]="order.endTime" />
+            </span>
+          </div>
+          
+          @if(order.groupNote) {
+            <div class="hidden md:block text-300">|</div>
+            <div class="text-orange-600 flex align-items-center gap-1 text-sm">
+              <i class="pi pi-info-circle"></i>
+              <span>{{ order.groupNote }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="grid">
+    <!-- 商品列表 -->
+    <div class="col-12 md:col-8">
+      <app-store-list
+        [stores]="stores()"
+        [cart]="cart()"
+        (add)="handleAddToCart($event.item, $event.sId)"
+        (remove)="handleRemoveFromCart($event)"
+      />
+    </div>
+
+    <!-- 購物車 -->
+    <div class="col-12 md:col-4">
+      <app-order-summary
+        class="sticky top-0 pt-2 block"
+        [orderedItems]="cart()"
+        [gId]="gId()"
+        (remove)="handleRemoveFromCart($event)"
+        />
+    </div>
+  </div>
+</section>

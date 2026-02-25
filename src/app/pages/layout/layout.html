@@ -1,0 +1,51 @@
+<section id="layout-section" class="flex flex-column h-screen">
+  <header>
+    <app-header (onMenuToggle)="mobileMenuVisible.set(true)" />
+  </header>
+
+  <main class="flex flex-row flex-grow-1 overflow-hidden">
+    <aside 
+      [class]="isCollapsed() ? 'w-5rem' : 'w-16rem'" 
+      class="hidden md:flex flex-column flex-shrink-0 transition-all duration-300 border-right-1 border-blue-100 "
+      >
+      
+      <div class="menm-div flex-grow-1 shadow-1">
+        <app-menu [collapsed]="isCollapsed()" />
+      </div>
+
+      <div class="collapse-btn flex align-items-center p-2 border-top-1 border-gray-100" 
+          [class.justify-content-center]="isCollapsed()"
+          [class.justify-content-end]="!isCollapsed()"
+          >
+        <p-button 
+          [icon]="isCollapsed() ? 'pi pi-angle-double-right' : 'pi pi-angle-double-left'" 
+          [text]="true" 
+          [rounded]="true" 
+          (onClick)="toggleAside()" 
+          class="custom-p-button-text"
+          />
+      </div>
+    </aside>
+
+    <p-drawer 
+      [(visible)]="mobileMenuVisible" 
+      header="選單" 
+      styleClass="custom-drawer-menu"
+      >
+      <app-menu 
+        [collapsed]="false" 
+        (onItemClick)="mobileMenuVisible.set(false)" 
+        />
+    </p-drawer>
+
+    <article class="flex-grow-1 p-4 overflow-x-hidden overflow-y-auto relative">
+      <router-outlet />
+    </article>
+
+  </main>
+
+  @if(!isProd){
+    <app-json-dialog></app-json-dialog>
+  }
+  
+</section>

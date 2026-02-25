@@ -1,0 +1,148 @@
+<section id="group-info-section">
+  <div
+    class="cursor-pointer hover:underline mb-3 text-color-secondary"
+    (click)="goBack()"
+    >
+    <i class="pi pi-arrow-left mr-2"></i>
+    <span>返回團購列表</span>
+  </div>
+  <div class="bg-white p-3 border-round mb-4 shadow-1">
+    <div class="grid p-1 md:row-gap-1">
+      @let orderInfo = this.orderInfo();
+      <!-- 團購名稱 & 類型 -->
+      <div class="col-12 md:col-6">
+        <span class="text-main-700 font-bold text-xl">
+          {{ orderInfo.groupName }}
+        </span>
+        <p-tag
+          [value]="orderInfo.label"
+          [ngClass]="orderInfo.category+'-tag'"
+          class="border-none ml-1"
+          />
+      </div>
+      <!-- 結單時間 & 狀態 -->
+      <div class="col-12 md:col-6">
+        <span class="text-gray-main">結單時間:</span>
+        <span class="text-primary font-bold">
+          {{ orderInfo.endTime | date: 'yyyy-MM-dd HH:mm:ss' }}
+        </span>
+        <p-tag
+          [value]="statusDisplay[orderInfo.status].label"
+          [severity]="statusDisplay[orderInfo.status].value"
+          class="ml-1"
+          />
+      </div>
+      <!-- 發起人 -->
+      <div class="col-12 md:col-6">
+        <span class="text-gray-main mr-2">發起人:</span>
+        <span class="text-gray-main font-bold">
+          {{ orderInfo.creator }}
+        </span>
+      </div>
+      <!-- 總數量 & 總金額 -->
+      <div class="col-6 md:col-6">
+        <div class="grid">
+          <div class="col-12 md:col-6">
+            <span class="text-gray-main mr-2">總數量:</span>
+            <span class="text-gray-main font-bold">
+              {{ orderInfo.totalQty ?? 0 }}
+            </span>
+          </div>
+          <div class="col-12 md:col-6">
+            <span class="text-gray-main mr-2">總金額:</span>
+            <span class="text-gray-main font-bold text-xl text-orange-600">
+              ${{ (orderInfo.total ?? 0) | number: '1.0-0' }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <!-- 備註 -->
+      <div class="col-12 mt-2 pt-2 border-top-1 border-main-100">
+        <span class="text-gray-main mr-2 block mt-1 mb-2">團購備註:</span>
+        <div class="text-orange-600 pl-2">
+          {{ orderInfo.groupNote }}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 各商家訂單資料 -->
+  @for (shop of shopStats(); track shop.sId) {
+    <p-panel class="custom-panel mb-4 border-round shadow-1" [toggleable]="true">
+      <ng-template pTemplate="header">
+        <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center w-full gap-1 pb-1">
+          <!-- 商家名稱 & 地址 & 電話 -->
+          <div class="flex flex-column gap-1">
+            <span class="font-bold text-xl">{{ shop.shopName }}</span>
+
+            <div class="flex flex-column sm:flex-row gap-2 sm:gap-3 text-500 text-sm">
+              @if(!isMobile()) {
+              <span class="flex align-items-center">
+                <i class="pi pi-map-marker mr-1"></i>{{ shop.address }}
+              </span>
+              }
+
+              <a [href]="'tel:' + shop.tel" class="flex align-items-center text-bule-50 no-underline hover:underline ">
+                <i class="pi pi-phone text-xs mr-1"></i>{{ shop.tel }}
+              </a>
+            </div>
+          </div>
+          <!-- 數量 & 金額 -->
+          <div class="flex align-items-center gap-4 border-top-1 md:border-top-none md:border-left-1 surface-border pt-3 md:pt-0 md:pl-4">
+            <div class="flex flex-column md:text-right">
+              <span class="text-sm bg-white-alpha-90 px-2 border-round nowrap">
+                <i class="pi pi-box text-xs mr-1"></i>{{ shop.qty }} 份
+              </span>
+            </div>
+            <div class="flex flex-column text-right">
+              <span class="text-orange-600 font-bold text-lg mr-1">${{ shop.total | number }}</span>
+            </div>
+          </div>
+
+        </div>
+      </ng-template>
+
+      <p-table
+        [value]="shop.orderedItems"
+        [scrollable]="true"
+        [scrollHeight]="dynamicScrollHeight()"
+        sortMode="single"
+        sortField="productName"
+        [sortOrder]="1"
+        class="mt-2 pr-1 mb-3 md:mb-1 custom-p-table"
+        >
+        <ng-template pTemplate="header">
+          <tr>
+            <th>#</th>
+            <th>訂購人</th>
+            <th pSortableColumn="productName">
+              商品名稱
+              <p-sortIcon field="productName"></p-sortIcon>
+            </th>
+            <th pSortableColumn="price">
+              單價
+              <p-sortIcon field="price"></p-sortIcon>
+            </th>
+            <th>數量</th>
+            <th>小計</th>
+            <th>個人備註</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-item let-rowIndex="rowIndex">
+          <tr class="hover:bg-blue-50">
+            <td>{{ rowIndex + 1 }}</td>
+            <td>{{ item.userName }}</td>
+            <td>{{ item.productName }}</td>
+            <td>${{ item.price }}</td>
+            <td>{{ item.quantity }}</td>
+            <td class="text-orange-600">
+              ${{ (item.price * item.quantity) | number:
+              '1.0-0' }}
+              </td>
+            <td class="text-sm">{{ item.remark }}</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </p-panel>
+  }
+</section>

@@ -1,0 +1,15 @@
+:host ::ng-deep .custom-toast {
+
+  .p-toast-message-content {
+    padding: 1rem 1rem 1rem 2.5rem;
+  }
+
+}
+
+.custom-toast {
+
+  .toast-body {
+    min-height: 5rem;
+  }
+
+}

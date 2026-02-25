@@ -1,0 +1,230 @@
+<section id="group-center-section">
+  <app-status-card [stats]="stats()"> </app-status-card>
+
+  <div class="flex flex-column md:flex-row justify-content-center md:justify-content-between align-items-start md:align-items-center gap-3">
+    <!-- 日期 & 狀態 & 關鍵字 -->
+    <div class="flex flex-column md:flex-row justify-content-center md:justify-content-start align-items-start md:align-items-center gap-3">
+      <!-- 日期 & 類型 -->
+      <div class="flex justify-content-center align-items-center gap-2 md:gap-3">
+        <p-floatlabel variant="on">
+          <p-datepicker
+            [(ngModel)]="rangeDates"
+            [showButtonBar]="true"
+            placeholder="請輸入查詢日期"
+            selectionMode="range"
+            [readonlyInput]="true"
+            inputId="rangeDates"
+            dateFormat="yy-mm-dd"
+            [minDate]="minDate()"
+            [maxDate]="maxDate()"
+            [firstDayOfWeek]="1"
+            >
+            <ng-template
+              #buttonbar
+              let-todayCallback="todayCallback"
+              let-clearCallback="clearCallback"
+              >
+              <div class="flex justify-content-between align-items-center w-full">
+                <div class="flex align-items-center gap-2">
+                  <p-button
+                  size="small"
+                  label="本週"
+                  severity="secondary"
+                  (click)="currentWeek()"
+                  />
+                  <p-button
+                    size="small"
+                    label="本月"
+                    severity="secondary"
+                    (click)="currentMonth()"
+                    />
+                </div>
+                <div class="flex align-items-center gap-2">
+                  <p-button
+                    size="small"
+                    label="今天"
+                    (click)="today()"
+                    variant="outlined"
+                    />
+                  <p-button
+                    size="small"
+                    icon="pi pi-times"
+                    severity="danger"
+                    variant="text"
+                    (click)="clearCallback($event)"
+                    />
+                </div>
+              </div>
+            </ng-template>
+          </p-datepicker>
+          <label for="rangeDates" class="text-500">日期：</label>
+        </p-floatlabel>
+        <!-- 狀態 -->
+        <p-floatlabel variant="on">
+          <p-select
+            [options]="statusOpts"
+            [(ngModel)]="selectedStatus"
+            optionLabel="label"
+            optionValue="value"
+            style="width: 6.625rem;"
+            />
+            <label for="rangeDates" class="text-500 block pr-3 lg:pr-0">狀態：</label>
+        </p-floatlabel>
+      </div>
+      <!-- 類型 && 關鍵字 -->
+      <div class="flex justify-content-center align-items-center gap-2 md:gap-3">
+        <p-floatlabel variant="on">
+          <input
+            pInputText
+            id="searchKey"
+            [(ngModel)]="searchKey"
+            placeholder="請輸入團購名稱或產品名稱"
+            autocomplete="off"
+            />
+          <label for="searchKey" class="text-500">關鍵字：</label>
+        </p-floatlabel>
+        <!-- 類型 -->
+        <p-floatlabel variant="on">
+          <p-select
+            [options]="categoryOptions"
+            [(ngModel)]="selectedCategory"
+            optionLabel="label"
+            optionValue="value"
+            style="width: 6.625rem;"
+            />
+            <label for="rangeDates" class="text-500 block pr-3 lg:pr-0">類型：</label>
+        </p-floatlabel>
+      </div>
+    </div>
+    <!-- 新增 & 匯出 -->
+    <div class="flex justify-content-end align-items-center w-full">
+      <!-- 新增 -->
+      <p-button 
+        label="新增" 
+        icon="pi pi-plus" 
+        [text]="true" 
+        class="custom-p-button-text"
+        (onClick)="goToGroupForm('add', null)" 
+        />
+      <!-- 匯出 -->
+      <p-button 
+        label="批次匯出" 
+        icon="pi pi-file-export" 
+        [text]="true" 
+        class="custom-p-button-text"
+        [disabled]="!selectOrders()?.length"
+        (onClick)="batchExportOrders()" 
+        />
+    </div>
+  </div>
+
+  <!-- table -->
+  <p-table
+    [value]="filterGroupBuysDatas()"
+    [scrollable]="true"
+    [scrollHeight]="dynamicScrollHeight()"
+    class="mt-2 pr-1 mb-3 md:mb-1 custom-p-table"
+    [(selection)]="selectOrders"
+    dataKey="gId"
+    >
+    <ng-template #header>
+      <tr>
+        <th style="width: 4rem" class="text-center"><p-tableHeaderCheckbox /></th>
+        <th>#</th>
+        <th pSortableColumn="status">團購狀態 <p-sortIcon field="status" /></th>
+        <th>團購名稱</th>
+        <th>類型</th>
+        <th>發起人</th>
+        <th>商家名稱</th>
+        <th pSortableColumn="totalQty">訂單總數 <p-sortIcon field="totalQty" /></th>
+        <th pSortableColumn="total">總金額 <p-sortIcon field="total" /></th>
+        <th>開始時間</th>
+        <th pSortableColumn="endTime">截止時間 <p-sortIcon field="endTime" /></th>
+        <th>備註</th>
+        <th>操作</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-group let-rowIndex="rowIndex">
+      <tr
+        class="hover:bg-blue-50 cursor-pointer"
+        (click)="isMobile() ? null : goToGroupInfo(group.gId)"
+        >
+        <td (click)="$event.stopPropagation()">
+            <p-tableCheckbox [value]="group" />
+        </td>
+        <td class="text-center">{{ rowIndex + 1 }}</td>
+        <!-- 團購狀態 -->
+        <td>
+          <p-tag
+            [value]="statusDisplay[group.status].label"
+            [severity]="statusDisplay[group.status].value"
+          />
+        </td>
+        <!-- 團購名稱 -->
+        <td>{{ group.groupName }}</td>
+        <!-- 類型 -->
+        <td>
+          <p-tag
+            [value]="group.label"
+            severity="secondary"
+            class="border-none"
+            [ngClass]="group.category+'-tag'"
+            />
+        </td>
+        <!-- 發起人 -->
+        <td>{{ group.creator }}</td>
+        <!-- 商家名稱 -->
+        <td>
+          @for(shop of group.shops; track shop.sId){
+            <p
+              class="my-1 cursor-pointer hover:underline text-blue-700"
+              (click)="goToShop($event, shop.sId)"
+              [pTooltip]="shop.address + '\<br>' + shop.tel"
+              [tooltipOptions]="{ escape: false }"
+              tooltipPosition="top"
+              >
+              {{ shop.shopName }}
+            </p>
+          }
+        </td>
+        <!-- 訂單數量 -->
+        <td>{{ group.totalQty }}</td>
+        <!-- 總金額 -->
+        <td class="text-orange-600">${{ group.total | number: '1.0-0' }}</td>
+        <!-- 開始時間 -->
+        <td>{{ group.startTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <!-- 截止時間 -->
+        <td>{{ group.endTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <!-- 備註 -->
+        <td class="text-orange-600">{{ group.groupNote }}</td>
+        <!-- 操作 -->
+        <td>
+          <p-button
+            icon="pi pi-ellipsis-v"
+            class=""
+            [text]="true"
+            severity="secondary"
+            (click)="openMenu($event, menu, group)"
+            />
+        </td>
+      </tr>
+    </ng-template>
+    <!-- 沒有資料 -->
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="13" class="text-center py-10">
+          <div class="flex flex-col justify-content-center align-items-center">
+            <p class="text-gray-500 text-lg">無團購資料</p>
+          </div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+  <p-menu
+    #menu
+    [model]="menuItems()"
+    [popup]="true"
+    appendTo="body"
+    />
+</section>

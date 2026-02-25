@@ -1,0 +1,63 @@
+<div class="login-wrapper">
+  <p-card class="login-card shadow-2 border-1">
+    <!-- header -->
+    <ng-template pTemplate="header">
+      <div class="text-center pt-5">
+        <h2 class="m-0">
+          Chase Office Eats
+        </h2>
+        <p>請登入您的帳號</p>
+      </div>
+    </ng-template>
+    <!-- 表單 -->
+    <form 
+      [formGroup]="loginForm" 
+      (ngSubmit)="onLogin()" 
+      class="flex flex-column gap-3"
+      >
+      <!-- 帳號 -->
+      <p-floatlabel variant="on">
+        <input 
+          pInputText 
+          id="email"
+          name="email"
+          class="w-full"
+          autocomplete="off" 
+          formControlName="email"
+          placeholder="example@mail.com"
+          />
+        <label for="email">帳號</label>
+      </p-floatlabel>
+      <!-- PW -->
+      <p-floatlabel variant="on">
+          <p-password
+            id="email"
+            name="email"
+            class="w-full"
+            formControlName="password"
+            [toggleMask]="true"
+            [feedback]="false"
+            inputStyleClass="w-full"
+            placeholder="請輸入密碼"
+            >
+          </p-password>
+        <label for="password">密碼</label>
+      </p-floatlabel>
+      <!-- 忘記密碼 -->
+      <div class="flex align-items-center justify-content-end mt-2">
+        <a class="no-underline font-medium cursor-pointer">
+          忘記密碼？
+        </a>
+      </div>
+      <!-- 登入 -->
+      <p-button
+        label="登入系統"
+        type="submit"
+        [disabled]="loginForm.invalid"
+        styleClass="w-full font-bold cursor-pointer"
+        severity="info"
+        >
+      </p-button>
+    </form>
+  </p-card>
+</div>

@@ -1,0 +1,30 @@
+<div class="flex flex-wrap gap-4 mb-4">
+  @for (item of stats(); track item.label) {
+    <div class="flex-1 min-w-full md:min-w-0">
+      <p-card 
+        class="h-full shadow-1 border-round-xl cursor-pointer hover:shadow-3 custom-p-card"
+        (click)="goToPage(item)"
+        >
+        <div class="flex justify-content-between mb-3">
+          <div>
+            <span class="block text-500 font-medium mb-3">{{ item.label }}</span>
+            <div class="text-900 font-bold text-3xl">
+              @let unit = item?.unit ?? '';
+              @let value = item?.value ?? 0;
+              @if (item.isPrefix) {
+                <span>{{ unit }}</span>
+                <span>{{ value | number: '1.0-0' }}</span>
+              } @else {
+                <span>{{ item.value }} </span>
+                <span class="text-lg font-normal">{{ unit }}</span>
+              }
+            </div>
+          </div>
+          <div class="total-icon-wrap flex align-items-center justify-content-center border-round" [ngClass]="item.color">
+            <i [class]="item.icon + ' text-xl'"></i>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  }
+</div>

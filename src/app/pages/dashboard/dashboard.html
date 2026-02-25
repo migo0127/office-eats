@@ -1,0 +1,111 @@
+<section id="dashoard-section" class="p-2">
+  <!-- 總項區 -->
+  <app-status-card
+    [stats]="stats()"
+    >
+  </app-status-card>
+
+  <!-- 團購區 -->
+  <div class="flex flex-column md:flex-row md:justify-content-between md:align-items-center mb-4 gap-3">
+    <h2 class="text-xl font-bold m-0 text-center md:text-left text-main-700">
+      正在進行的團購
+    </h2>
+    <div class="flex justify-content-center md:justify-content-end">
+      <p-selectButton
+        [options]="categoryOptions"
+        [(ngModel)]="selectedCategory"
+        allowEmpty="false"
+        optionLabel="label"
+        optionValue="value"
+        styleClass="p-button-sm"
+        class="custom-select-button"
+      />
+    </div>
+  </div>
+
+  <div class="flex flex-column gap-3">
+    @for (group of filterGroupBuys(); track group.gId;) {
+      <p-card class="shadow-1 border-round-xl hover:shadow-3 transition-duration-300">
+        <div class="flex flex-column md:flex-row align-items-center gap-4">
+          <div class="flex-shrink-0 bg-gray-100 border-round-lg p-3">
+            <i class="pi pi-box text-3xl text-gray-400"></i>
+          </div>
+
+          <div class="flex flex-column gap-2 w-full">
+            <div class="flex flex-column md:flex-row align-items-center gap-2 mb-1">
+              <span class="text-xl font-bold text-center">
+                {{ group.groupName }}
+              </span>
+              <div class="flex align-items-center gap-2 mb-1">
+                <p-tag
+                  [value]="group.label"
+                  severity="secondary"
+                  class="border-none"
+                  [ngClass]="group.category+'-tag'"
+                  />
+                <p-tag
+                  [value]="statusDisplay[group.status].label"
+                  [severity]="statusDisplay[group.status].value"
+                />
+              </div>
+            </div>
+
+            <div class="flex flex-column md:flex-row justify-content-center md:justify-content-start align-items-center md:align-items-start gap-2 text-500 text-sm">
+              <span>
+                <i class="pi pi-user mr-1"></i> {{ group.creator }}
+              </span>
+              @if(!isMobile()){
+              <span>|</span>
+              <span>預計 {{ group.endTime| date: 'yyyy-MM-dd HH:mm:ss'}} 截止</span>
+              }
+              @if(!isMobile()){
+              <span>|</span>
+              }
+              <span>預計 {{ group.estimateTime | date: 'yyyy-MM-dd HH:mm:ss'}} 到餐</span>
+            </div>
+            @if(group.groupNote) {
+              <div class="text-orange-600 text-sm text-center md:text-left">
+                <span>{{ group.groupNote }}</span>
+              </div>
+            }
+            @if(group?.totalQty) {
+              <div class="text-center md:text-left">
+                <p-avatar [label]="'+'+group.totalQty" shape="circle"/>
+              </div>
+            }
+          </div>
+
+          <div
+            class="flex flex-row md:flex-column justify-content-evenly md:justify-content-center  align-items-center md:align-items-end gap-3 w-full md:w-auto"
+          >
+            <div class="text-center md:text-right">
+              <div class="text-primary font-bold text-2xl">
+                <app-diff-time-display [endTime]="group.endTime" />
+              </div>
+              <div class="text-500 text-xs">
+                收單剩餘時間
+              </div>
+            </div>
+
+          <p-button
+              label="立即點餐"
+              icon="pi pi-angle-right"
+              iconPos="right"
+              class="custom-p-button"
+              styleClass="p-button-rounded px-4 white-space-nowrap"
+              [disabled]="group.status === groupBuyStatus.CANCEL || group.status === groupBuyStatus.CLOSED"
+              (onClick)="goToOrder(group)"
+            />
+          </div>
+        </div>
+      </p-card>
+    } @empty {
+      <div class="flex flex-column align-items-center justify-center p-8 bg-gray-50 border-round-xl border-1 border-300 border-dashed">
+        <span class="text-xl font-bold text-500 mb-2">
+          目前沒有團購
+        </span>
+      </div>
+    }
+  </div>
+</section>
+

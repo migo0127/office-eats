@@ -1,0 +1,77 @@
+<section class="flex flex-column gap-3 p-3">
+  <!-- 類型 -->
+  <div class="flex align-items-center gap-3">
+    <!-- 類型 -->
+    <p-floatlabel variant="on">
+      <p-select
+        [options]="typeOptions"
+        [(ngModel)]="selectedType"
+        optionLabel="label"
+        optionValue="value"
+        class="w-full"
+      />
+      <label for="accStatus">類型：</label>
+    </p-floatlabel>
+  </div>
+
+  <p-table
+    [value]="filteredTransactions()"
+    [scrollable]="true"
+    [scrollHeight]="dynamicScrollHeight()"
+    class="mt-2 pr-1 md:mb-1 custom-p-table"
+    dataKey="bId"
+    [expandedRowKeys]="expandedRows"
+    >
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem" class="text-center">#</th>
+        <th>交易時間</th>
+        <th>團購名稱</th>
+        <th>類型</th>
+        <th class="text-right">原金額</th>
+        <th class="text-right">變動金額</th>
+        <th class="text-right font-bold">後金額</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-transaction let-rowIndex="rowIndex">
+      <tr>
+        <td class="text-center">{{ rowIndex + 1 }}</td>
+        <td>{{ transaction.transactionTime | date: 'yyyy-MM-dd HH:mm:ss' }}</td>
+        <td>{{ transaction?.groupName ?? '-' }}</td>
+        <td>
+          @let typeKey = transaction.type || 'DEFAULT';
+          @let info = TransactionConfig[typeKey];
+          <p-tag 
+            [value]="info.label" 
+            [severity]="info.color"  />
+        </td>
+        <td class="text-right">
+          ${{ transaction.beforeBalance | number }}
+        </td>
+        <td class="text-right">
+          @let isPlus = transaction.type === 'DEPOSIT' || transaction.type === 'REFUND';
+          
+          <span
+            [ngClass]="isPlus ? 'text-green-600' : 'text-red-600'"
+            class="font-bold font-mono"
+          >
+            {{ isPlus ? '+' : '-' }}{{ transaction.amount | number }}
+          </span>
+        </td>
+        <td class="text-right font-bold text-900">
+          ${{ transaction.afterBalance | number }}
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7" class="text-center py-5 text-500">
+          <i class="pi pi-folder-open text-3xl mb-2"></i>
+          <div>暫無符合條件的交易紀錄</div>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>
