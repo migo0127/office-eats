@@ -14,7 +14,7 @@ export class AuthService {
   private storageService = inject(StorageService);
 
   readonly userInfo = signal<UserInfo | null>(
-    this.storageService.localStorageGetItem(AUTH_STORAGE.USER_INFO)
+    this.storageService.sessionStorageGetItem(AUTH_STORAGE.USER_INFO)
   );
 
   /** 是否有登入 */
@@ -39,14 +39,14 @@ export class AuthService {
     };
     // console.log('loginItem :', loginItem);
     this.userInfo.set(mockUser);
-    this.storageService.localStorageSetItem(AUTH_STORAGE.USER_INFO, mockUser);
+    this.storageService.sessionStorageSetItem(AUTH_STORAGE.USER_INFO, mockUser);
     this.router.navigate([APP_ROUTES.DASHBOARD]);
   }
 
   /** 登出 */
   logout(): void {
     this.userInfo.set(null);
-    localStorage.removeItem(AUTH_STORAGE.USER_INFO);
+    this.storageService.sessionStorageRemoveItem(AUTH_STORAGE.USER_INFO);
     this.router.navigate([APP_ROUTES.LOGIN]);
   }
 
