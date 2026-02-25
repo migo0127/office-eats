@@ -1,5 +1,4 @@
-import { OrderedItems } from "@pages/order/order-summary/order-summary.model";
-import { OrderItem, Orders } from "@shared/models/group-buy-common.model";
+import { Orders } from "@shared/models/group-buy-common.model";
 
 const ORDER_MAIN_DATA: Orders[] = [
   {

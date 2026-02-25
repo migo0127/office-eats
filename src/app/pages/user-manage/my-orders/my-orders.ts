@@ -292,7 +292,7 @@ export class MyOrdersComponent {
         'groupNote': data.groupNote
       },
     );
-    this.router.navigate([ABSOLUTE_ROUTES.ORDER_MAIN(data.gId)]);
+    this.router.navigate([ABSOLUTE_ROUTES.ORDER_MAIN(data.gId)], { queryParams: { oId: data.oId} });
   }
 
   /** 刪除訂單 */

@@ -37,6 +37,7 @@ export class OrderSummaryComponent {
 
   /** input、output，當父組件 cart 變動時，會自動反應 */
   gId = input.required<string>();
+  oId = input.required<string | null>();
   orderedItems = input.required<OrderItem[]>();
   remove = output<OrderItem>();
 

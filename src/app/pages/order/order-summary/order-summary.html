@@ -106,7 +106,7 @@
       [label]="btnLabel"
       styleClass="w-full"
       class="w-full mt-3 block custom-p-button"
-      [disabled]="!leftTime()"
+      [disabled]="!leftTime() || (!oId() && !orderedItems()?.length)"
       (click)="submit()"
     />
   </ng-template>

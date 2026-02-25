@@ -26,7 +26,6 @@ export class App {
   readonly isLoading = computed(() => this.loadingService.isLoading());
 
   constructor() {
-
     effect(() => {
       const body: HTMLElement = this.document.body;
       const user: UserInfo = this.userInfo();

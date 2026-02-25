@@ -1,4 +1,4 @@
-import { computed, HostListener, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoginItem, UserInfo } from '@shared/models/auth.model';
 import { StorageService } from '@shared/services/storage.service';
