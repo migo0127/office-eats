@@ -80,7 +80,7 @@ chase-office-eats/
     - 建立訂單與購物車功能 (`OrderMain`, `OrderSummary`)。
     - 查看訂單狀態與歷史記錄。
 
-5.  **使用者中心 (User Center)**
+5.  **使用者中心 (User Management)**
     - 查看個人訂單記錄 (`MyOrders`)。
     - 查看交易與儲值歷史 (`TransactionHistory`)。
 
