@@ -20,7 +20,7 @@ export class App {
   private authService = inject(AuthService);
   private loadingService = inject(LoadingService);
 
-  protected readonly title = signal('chase-office-eats');
+  protected readonly title = signal('office-eats');
 
   readonly userInfo = computed(() => this.authService.userInfo());
   readonly isLoading = computed(() => this.loadingService.isLoading());

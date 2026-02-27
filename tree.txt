@@ -1,4 +1,4 @@
-chase-office-eats
+office-eats
 ├── README.md
 ├── angular.json
 ├── package-lock.json

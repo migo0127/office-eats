@@ -39,7 +39,7 @@ https://migo0127.github.io/office-eats/#/login
 本專案遵循 Angular 的模組化架構設計，主要目錄結構如下：
 
 ```
-chase-office-eats/
+office-eats/
 ├── src/
 │   ├── app/
 │   │   ├── auth/           # 身份驗證模組 (登入頁面、相關邏輯)
