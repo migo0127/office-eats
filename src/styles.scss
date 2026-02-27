@@ -31,11 +31,11 @@ body {
 
 // 切換對應顏色的logo
 body.theme-admin {
-  --logo-url: url('/assets/img/logo-4.png');
+  --logo-url: url('assets/img/logo-4.png');
 }
 
 body.theme-customer {
-  --logo-url: url('/assets/img/logo-5.png');
+  --logo-url: url('assets/img/logo-5.png');
 }
 
 /* 修改全域滾動條樣式 */
