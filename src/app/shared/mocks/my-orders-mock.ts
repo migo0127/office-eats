@@ -1,6 +1,6 @@
-import { setTime } from "./util-function"
+import { setTime } from "./util-function";
 
-let MY_ORDERS_DATA = [
+const MY_ORDERS_DATA = [
   {
     oId: "100",
     gId: "1",
