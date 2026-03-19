@@ -11,10 +11,12 @@ import { ABSOLUTE_ROUTES } from 'src/app/core/config/routes.config';
 import { Menu } from 'primeng/menu';
 import { DeviceService } from '@shared/services/device.service';
 import { ToastService } from '@shared/services/toast.service';
-import { concatMap, filter, of } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BehaviorSubject, combineLatest, concatMap, filter, map, of, startWith, Subject, tap } from 'rxjs';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { JsonDataService } from '@shared/services/json-data.service';
 import { Tooltip } from "primeng/tooltip";
+import { GroupCenterService } from './group-center.service';
+import { ApiResponse } from '@core/models/api-response.model';
 
 @Component({
   selector: 'app-group-center',
@@ -31,6 +33,7 @@ export class GroupCenterComponent {
   private activatedRoute = inject(ActivatedRoute);
   private dateRangeService = inject(DateRangeService);
   private jsonDataService = inject(JsonDataService);
+  private groupCenterService = inject(GroupCenterService);
 
   /** 是否為手機 */
   isMobile = computed(() => this.deviceService.isMobile());
@@ -109,130 +112,17 @@ export class GroupCenterComponent {
   /** 關鍵字 */
   searchKey = signal<string>(null);
 
-  groupBuys = signal<GroupBuyItem[]>([
-    {
-      gId: "1",
-      groupName: "正忠排骨飯",
-      category: 'lunch',
-      label: '午餐',
-      status: 'OPEN',
-      creator: 'Sarah Lin',
-      shops: [
-        {
-          sId: '001',
-          shopName: '正忠排骨飯',
-          address: '臺北市大安區建國南路一段',
-          tel: '02-27026493'
-        }
-      ],
-      totalQty: 15,
-      startTime: '2026-02-27T09:00:00',
-      endTime: '2026-02-27T09:40:00',
-      estimateTime: '2026-02-27T12:00:00',
-      total: 3450,
-      groupNote: '最少12份送',
-      link: null
-    },
-    {
-      gId: "2",
-      groupName: "迷客夏 Milksha 臺北遼寧店",
-      category: 'drink',
-      label: '飲料',
-      status: 'CLOSED',
-      creator: 'Jason Wu',
-      shops: [
-        {
-          sId: '002',
-          shopName: '迷客夏 Milksha 臺北遼寧店',
-          address: '臺北市中山區遼寧街38號',
-          tel: '02-27755569'
-        }
-      ],
-      startTime: '2026-02-26T09:00:00',
-      endTime: '2026-02-26T16:30:00',
-      estimateTime: '2026-02-26T15:30:00',
-      totalQty: 4,
-      total: 390,
-      groupNote: null,
-      link: null,
-    },
-    {
-      gId: "3",
-      groupName: "Yellow Monday可頌鬆餅",
-      category: 'teaTime',
-      label: '下午茶',
-      status: 'OPEN',
-      creator: 'Jason Wu',
-      shops: [
-        {
-          sId: '003',
-          shopName: 'Yellow Monday可頌鬆餅',
-          address: '臺北市松山區民生東路四段124號',
-          tel: '02-25466126'
-        },
-        {
-          sId: '004',
-          shopName: '50嵐 復興店',
-          address: '臺北市大安區復興南路二段182號' ,
-          tel: '02-27093698'
-        },
-      ],
-      startTime: '2026-02-27T09:00:00',
-      endTime: '2026-02-27T12:00:00',
-      estimateTime: '2026-02-28T14:30:00',
-      totalQty: 54,
-      total: 6910,
-      groupNote: '每人上限 130 元',
-      link: 'xxxx'
-    },
-    {
-      gId: "4",
-      groupName: "50嵐 復興店",
-      category: 'drink',
-      label: '飲料',
-      status: 'CANCEL',
-      creator: 'Jason Wu',
-      shops: [
-        {
-          sId: '004',
-          shopName: '50嵐 復興店',
-          address: '臺北市大安區復興南路二段182號' ,
-          tel: '02-27093698'
-        },
-      ],
-      startTime: '2026-02-23T09:00:00',
-      endTime: '2026-02-23T10:30:00',
-      estimateTime: '2026-02-23T15:30:00',
-      totalQty: 14,
-      total: 2530,
-      groupNote: null,
-      link: null
-    },
-    {
-      gId: "5",
-      groupName: "50嵐 復興店",
-      category: 'drink',
-      label: '飲料',
-      status: 'CANCEL',
-      creator: 'Jason Wu',
-      shops: [
-        {
-          sId: '004',
-          shopName: '50嵐 復興店',
-          address: '臺北市大安區復興南路二段182號' ,
-          tel: '02-27093698'
-        },
-      ],
-      startTime: '2025-12-25T09:00:00',
-      endTime: '2025-12-25T11:00:00',
-      estimateTime: '2025-12-26T15:30:00',
-      totalQty: 16,
-      total: 2730,
-      groupNote: null,
-      link: null
-    }
-  ]);
-
+  refreshGroupList$: BehaviorSubject<void> = new BehaviorSubject(undefined);
+  groupBuys = toSignal(
+    this.refreshGroupList$.pipe(
+      concatMap(() => this.groupCenterService.getGroupCenterList(true).pipe(
+        map((res: ApiResponse<GroupBuyItem[]>) => res?.data ?? []),
+        this.toastService.toastCatchError$(of([])),
+      )),
+    ),
+    { initialValue: [] as GroupBuyItem[] }
+  );
+  
   /** table 資料 */
   filterGroupBuysDatas = computed<GroupBuyItem[]>(() => {
     const datas = this.groupBuys();
@@ -255,7 +145,7 @@ export class GroupCenterComponent {
       const matchWord: boolean =
         word === '' ||
         data.groupName?.toLowerCase().includes(word) ||
-        data.shops?.some((copmay) => copmay?.shopName?.toLowerCase().includes(word));
+        data.shops?.some((copmay: any) => copmay?.shopName?.toLowerCase().includes(word));
 
       // 4.過濾時間區間
       let matchDates: boolean = false;
@@ -335,9 +225,7 @@ export class GroupCenterComponent {
 
   constructor() { }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void { }
 
   /** 當日 */
   today(): void {
@@ -420,19 +308,17 @@ export class GroupCenterComponent {
     ).pipe(
       filter((isConfirm: boolean) => isConfirm),
       // API層
-      concatMap(() => of(data.gId).pipe(
+      concatMap(() => this.groupCenterService.cancelGroup(data.gId, true).pipe(
+        map((res: ApiResponse<boolean>) => res?.success ?? false),
         this.toastService.toastCatchError$(),
       )),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe({
-      next: (gId: string) => {
-        this.toastService.notify({ detail: '取消成功' });
-        this.groupBuys.update((curList) =>
-          curList.map(item => item.gId === gId
-            ? { ...item, status: GroupBuyStatus.CANCEL }
-            : item
-          )
-        );
+      next: (isCancel: boolean) => {
+        if(isCancel) {
+          this.toastService.notify({ detail: '取消成功' });
+          this.refreshGroupList$.next();
+        }
       }
     });
   }
@@ -444,14 +330,17 @@ export class GroupCenterComponent {
     ).pipe(
       filter((isConfirm: boolean) => isConfirm),
       // API層
-      concatMap(() => of(data.gId).pipe(
+      concatMap(() => this.groupCenterService.deleteGroup(data.gId, true).pipe(
+        map((res: ApiResponse<boolean>) => res?.success ?? false),
         this.toastService.toastCatchError$(),
       )),
       takeUntilDestroyed(this.destroyRef),
     ).subscribe({
-      next: (gId: string) => {
-        this.toastService.notify({ detail: '刪除成功' });
-        this.groupBuys.update((group) => group.filter(item => item.gId !== gId));
+      next: (isDelete: boolean) => {
+       if(isDelete) {
+         this.toastService.notify({ detail: '刪除成功' });
+         this.refreshGroupList$.next();
+       }
       }
     });
   }
