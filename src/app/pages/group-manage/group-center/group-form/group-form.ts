@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, input, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, linkedSignal, model, signal } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared/shared-imports';
 import { GROUP_FORM_IMPORTS } from './group-form-imports';
 import { Router } from '@angular/router';
@@ -33,16 +33,19 @@ export class GroupFormComponent {
   isCopy = computed(() => !!this.copyFrom());
 
   // 資料狀態
-  groupData = signal<Partial<GroupBuyItem>>({
-    groupName: '',
-    category: 'tea',
-    creator: 'Jason Wu',
-    startTime: new Date().toISOString(),
-    endTime: null,
-    groupNote: '',
-  });
+  groupData = linkedSignal({
+    source: () => this.isEdit(),
+    computation: () => ({
+      groupName: '',
+      category: 'tea',
+      creator: 'Jason Wu',
+      startTime: new Date().toISOString(),
+      endTime: null,
+      groupNote: '',
+      }) as Partial<GroupBuyItem>
+  })
 
-  selectedShopIds = signal<string[]>([]);
+  selectedShopIds = model<string[]>([]);
   selectedShops = signal<Shop[]>([]);
 
   // 選項資料
@@ -137,6 +140,11 @@ export class GroupFormComponent {
   isMobile = computed<boolean>(() => this.deviceService.isMobile());
 
   constructor() {}
+
+   /** 更新 groupData 資料 */
+  updateField<K extends keyof GroupBuyItem>(field: K, value: GroupBuyItem[K]): void {
+    this.groupData.update((prev) => ({ ...prev, [field]: value }));
+  }
 
   fetchGroupDetail(gid: string) {
     // API Call...

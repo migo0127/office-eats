@@ -242,6 +242,11 @@ export class GroupCenterComponent {
     this.rangeDates.set(this.dateRangeService.setMonth());
   }
 
+  /** 變更日期 */
+  onDateChange(newDates: Date[]) {
+    this.rangeDates.set(newDates);
+  }
+
   /** 前往店家管理頁 */
   goToShop(event: MouseEvent, sId: string): void {
     event.stopPropagation();

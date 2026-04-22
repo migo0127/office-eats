@@ -23,102 +23,115 @@
       <div class="bg-main-700 p-3 text-white font-bold">基本資訊</div>
     </ng-template>
 
-    @let g = groupData();
-    <div class="p-3 flex flex-column gap-4 mt-1">
-      <div class="flex flex-column md:flex-row gap-3">
-        <div class="flex-1">
-          <label class="font-bold block mb-2 text-700">團購名稱</label>
-          <input
-            pInputText
-            [(ngModel)]="g.groupName"
-            placeholder="例如：週五下午茶"
-            class="w-full custom-p-button"
-          />
+    @if(groupData(); as g){
+      <div class="p-3 flex flex-column gap-4 mt-1">
+        <div class="flex flex-column md:flex-row gap-3">
+          <div class="flex-1">
+            <label class="font-bold block mb-2 text-700">團購名稱</label>
+            <input
+              pInputText
+              [ngModel]="g.groupName"
+              (ngModelChange)="updateField('groupName', $event)"
+              placeholder="例如：週五下午茶"
+              class="w-full custom-p-button"
+            />
+          </div>
+          <div class="flex-1">
+            <label class="font-bold block mb-2 text-700">類型</label>
+            <p-select
+              [options]="typeOptions"
+              [ngModel]="g.category"
+              (ngModelChange)="updateField('category', $event)"
+              optionLabel="label"
+              optionValue="value"
+              placeholder="選擇類型"
+              class="w-full custom-p-select"
+            />
+          </div>
+          <div class="flex-1">
+            <label class="font-bold block mb-2 text-700">發起人</label>
+            <input 
+              pInputText 
+              [ngModel]="g.creator" 
+              (ngModelChange)="updateField('creator', $event)"
+              disabled 
+              class="w-full custom-p-button" 
+              />
+          </div>
         </div>
-        <div class="flex-1">
-          <label class="font-bold block mb-2 text-700">類型</label>
-          <p-select
-            [options]="typeOptions"
-            [(ngModel)]="g.category"
-            optionLabel="label"
-            optionValue="value"
-            placeholder="選擇類型"
-            class="w-full custom-p-select"
-          />
-        </div>
-        <div class="flex-1">
-          <label class="font-bold block mb-2 text-700">發起人</label>
-          <input pInputText [(ngModel)]="g.creator" disabled class="w-full custom-p-button" />
-        </div>
-      </div>
 
-      <div class="flex flex-column md:flex-row gap-3">
-        <div class="flex-1">
-          <label class="font-bold block mb-2 text-700">開始時間</label>
-          <p-datePicker
-            [(ngModel)]="g.startTime"
-            [showTime]="true"
-            hourFormat="24"
-            [showSeconds]="false"
-            class="w-full custom-p-datepicker"
+        <div class="flex flex-column md:flex-row gap-3">
+          <div class="flex-1">
+            <label class="font-bold block mb-2 text-700">開始時間</label>
+            <p-datePicker
+              [ngModel]="g.startTime"
+              (ngModelChange)="updateField('startTime', $event)"
+              [showTime]="true"
+              hourFormat="24"
+              [showSeconds]="false"
+              class="w-full custom-p-datepicker"
+              appendTo="body"
+            />
+          </div>
+          <div class="flex-1">
+            <label class="font-bold block mb-2 text-primary">截止點餐時間</label>
+            <p-datePicker
+              [ngModel]="g.endTime"
+              (ngModelChange)="updateField('endTime', $event)"
+              [showTime]="true"
+              hourFormat="24"
+              [showSeconds]="false"
+              class="w-full custom-p-datepicker"
+              appendTo="body"
+            />
+          </div>
+          <div class="flex-1">
+            <label class="font-bold block mb-2 text-700">預計送達時間</label>
+            <p-datePicker
+              [ngModel]="g.estimateTime"
+              (ngModelChange)="updateField('estimateTime', $event)"
+              [showTime]="true"
+              hourFormat="24"
+              [showSeconds]="false"
+              class="w-full custom-p-datepicker"
+              appendTo="body"
+            />
+          </div>
+        </div>
+
+        <div class="flex flex-column">
+          <label class="font-bold block mb-2 text-orange-600">選擇商家</label>
+          <p-multiSelect
+            [options]="shops()"
+            [(ngModel)]="selectedShopIds"
+            optionLabel="shopName"
+            optionValue="sId"
+            placeholder="請選擇一至多個商家"
+            display="chip"
+            [maxSelectedLabels]="isMobile() ? 4 : 5"
+            (onChange)="loadSelectedShopsData()"
+            class="w-full custom-p-multiSelect"
             appendTo="body"
           />
         </div>
-        <div class="flex-1">
-          <label class="font-bold block mb-2 text-primary">截止點餐時間</label>
-          <p-datePicker
-            [(ngModel)]="g.endTime"
-            [showTime]="true"
-            hourFormat="24"
-            [showSeconds]="false"
-            class="w-full custom-p-datepicker"
-            appendTo="body"
-          />
-        </div>
-        <div class="flex-1">
-          <label class="font-bold block mb-2 text-700">預計送達時間</label>
-          <p-datePicker
-            [(ngModel)]="g.estimateTime"
-            [showTime]="true"
-            hourFormat="24"
-            [showSeconds]="false"
-            class="w-full custom-p-datepicker"
-            appendTo="body"
-          />
+
+        <div class="flex flex-column">
+          <label class="font-bold block mb-2 text-700">團購備註</label>
+          <textarea
+            pTextarea
+            [ngModel]="g.groupNote"
+            (ngModelChange)="updateField('groupNote', $event)"
+            rows="2"
+            class="w-full custom-p-textarea"
+            placeholder="每人上限 150 元..."
+          ></textarea>
         </div>
       </div>
-
-      <div class="flex flex-column">
-        <label class="font-bold block mb-2 text-orange-600">選擇商家</label>
-        <p-multiSelect
-          [options]="shops()"
-          [(ngModel)]="selectedShopIds"
-          optionLabel="shopName"
-          optionValue="sId"
-          placeholder="請選擇一至多個商家"
-          display="chip"
-          [maxSelectedLabels]="isMobile() ? 4 : 5"
-          (onChange)="loadSelectedShopsData()"
-          class="w-full custom-p-multiSelect"
-          appendTo="body"
-        />
-      </div>
-
-      <div class="flex flex-column">
-        <label class="font-bold block mb-2 text-700">團購備註</label>
-        <textarea
-          pTextarea
-          [(ngModel)]="g.groupNote"
-          rows="2"
-          class="w-full custom-p-textarea"
-          placeholder="每人上限 150 元..."
-        ></textarea>
-      </div>
-    </div>
+    }
   </p-card>
 
   <!-- 商家資料 -->
-  @if (selectedShops().length > 0) {
+  @if (selectedShops()?.length > 0) {
     <p-card class="shadow-1 border-round mb-4 overflow-hidden border-none custom-p-card">
       <ng-template pTemplate="header">
         <div class="bg-main-700 p-3 text-white font-bold">商家資訊</div>
