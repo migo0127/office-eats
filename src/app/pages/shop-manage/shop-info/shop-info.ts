@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, model, signal } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared/shared-imports';
 import { SHOP_INFO_IMPORTS } from './shop-info-imports';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -89,10 +89,20 @@ export class ShopInfoComponent {
 
   isMobile = computed(() => this.deviceService.isMobile());
 
-  constructor() {}
+  constructor() { }
 
   goBack() {
     this.router.navigate([ABSOLUTE_ROUTES.SHOP_LIST]);
+  }
+
+  /** 更新 shop 欄位 */
+  updateShopField<K extends keyof Shop>(field: K, value: Shop[K]) {
+    this.shop.update((s) => ({ ...s, [field]: value }));
+  }
+
+  /** 更新 shop 欄位 */
+  updateProdpField<K extends keyof OrderItem>(field: K, value: OrderItem[K]) {
+    this.shop.update((s) => ({ ...s, [field]: value }));
   }
 
   /** 匯入 */
