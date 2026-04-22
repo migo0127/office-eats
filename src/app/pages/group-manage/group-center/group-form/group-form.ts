@@ -45,7 +45,7 @@ export class GroupFormComponent {
       }) as Partial<GroupBuyItem>
   })
 
-  selectedShopIds = model<string[]>([]);
+  selectedShopIds = signal<string[]>([]);
   selectedShops = signal<Shop[]>([]);
 
   // 選項資料
