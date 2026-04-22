@@ -7,7 +7,8 @@
     <div class="flex justify-content-center align-items-center gap-2 md:gap-3">
       <p-floatlabel variant="on">
         <p-datepicker
-          [(ngModel)]="rangeDates"
+          [ngModel]="rangeDates"
+          (ngModelChange)="updateRangeDates($event)"
           [showButtonBar]="true"
           placeholder="請輸入查詢日期"
           selectionMode="range"

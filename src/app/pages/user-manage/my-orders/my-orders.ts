@@ -228,6 +228,10 @@ export class MyOrdersComponent {
     this.rangeDates.set(this.dateRangeService.setMonth());
   }
 
+  updateRangeDates(newRangeDate: Date[]): void {
+    this.rangeDates.set(newRangeDate);
+  }
+
   /** 打開評分、評論 dialog */
   openCommentsDialog(item: GroupBuyItem): void {
     if(item.status  === this.groupBuyStatus.CLOSED) {
