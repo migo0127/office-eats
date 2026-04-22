@@ -133,6 +133,11 @@ export class UserBalanceComponent {
 
   constructor() {}
 
+  /** 變更餘額區間 */
+  onSliderChange(newRange: number[]) {
+    this.rangeBlance.set([...newRange]); 
+  }
+
   /** 批次匯入 */
   batchImportBlances(): void {
     

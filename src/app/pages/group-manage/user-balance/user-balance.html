@@ -56,7 +56,8 @@
           </div>
           
           <p-slider 
-            [(ngModel)]="rangeBlance" 
+            [ngModel]="rangeBlance()" 
+            (ngModelChange)="onSliderChange($event)"
             [range]="true" 
             [min]="0"
             [max]="5000"
