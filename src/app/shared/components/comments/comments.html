@@ -1,7 +1,7 @@
 <section id="comments-section" class="flex flex-column h-full">
   
   <div class="flex-grow-1 overflow-y-auto px-2" style="max-height: 70vh;">
-    @for(data of this.datas(); track data.pId; let last = $last) {
+    @for(data of this.datas(); track data.pId; let i = $index; let last = $last) {
       <!-- 商品名 & 星星 & 總評論數 -->
       <div 
         class="flex flex-column gap-2 mb-2 surface-border pb-2"
@@ -26,7 +26,8 @@
             <!-- 編輯時的星星 -->
             <p-rating 
               class="custom-rating" 
-              [(ngModel)]="data.myRating" 
+              [ngModel]="data.myRating" 
+              (ngModelChange)="updateDataField(i, 'myRating', $event)"
               />
           }
         </div>
@@ -39,7 +40,8 @@
               <textarea 
                 rows="4" 
                 pInputTextarea 
-                [(ngModel)]="data.myComment" 
+                [ngModel]="data.myComment" 
+                (ngModelChange)="updateDataField(i, 'myComment', $event)"
                 placeholder="撰寫您的評論: 味道如何？份量夠嗎？"
                 class="w-full border-round-lg shadow-1"
                 maxlength="150"

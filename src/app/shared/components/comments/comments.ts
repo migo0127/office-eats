@@ -46,6 +46,20 @@ export class CommentsComponent {
     }
   }
 
+  /** 更新 Data 值 */
+  updateDataField<K extends keyof CommentItem>(index: number, field: K, value: CommentItem[K]): void {
+    this.datas.update(prevDatas => {
+      const newDatas: CommentItem[] = [...prevDatas];
+      
+      newDatas[index] = { 
+        ...newDatas[index], 
+        [field]: value 
+      };
+      
+      return newDatas;
+    });
+  }
+
   /** 送出所有評論: 要 comment都有填寫， rating 本來就默認為 0 */
   submitAllComments() {
     const results: CommentItem[] = this.datas();
@@ -57,7 +71,7 @@ export class CommentsComponent {
       this.isCommonRequired.set(true);
       return;
     }
-
+    
     // 將整組資料丟回給原頁面
     this.ref.close(results);
   }
