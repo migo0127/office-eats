@@ -82,7 +82,8 @@
               type="text"
               pInputText
               inputId="remark"
-              [(ngModel)]="item.remark"
+              [ngModel]="item.remark" 
+              (ngModelChange)="updateItemField(i, 'remark', $event)"
               placeholder="例如：去冰、不加蔥..."
               class="w-full border-round-sm border-1 bg-gray-50 hover:bg-gray-100 transition-colors text-700 mt-1 p-1"
               />

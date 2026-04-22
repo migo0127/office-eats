@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, inject, input, output, signal } from '@angular/core';
+import { Component, computed, DestroyRef, inject, input, model, output, signal } from '@angular/core';
 import { SHARED_IMPORTS } from '@shared/shared-imports';
 import { ORDER_SUMMARY_IMPORTS } from './order-summary-imports';
 import { OrderItem, OrderStorage } from '@shared/models/group-buy-common.model';
@@ -38,7 +38,7 @@ export class OrderSummaryComponent {
   /** input、output，當父組件 cart 變動時，會自動反應 */
   gId = input.required<string>();
   oId = input.required<string | null>();
-  orderedItems = input.required<OrderItem[]>();
+  orderedItems = model.required<OrderItem[]>();
   remove = output<OrderItem>();
 
   orderData = signal<OrderStorage>(null);
@@ -65,6 +65,18 @@ export class OrderSummaryComponent {
   /** 刪除項目 */
   handleDelete(item: OrderItem): void {
     this.remove.emit(item);
+  }
+
+  /** 更新 orderedItems 資料 */
+  updateItemField(index: number, key: keyof OrderItem, value: string) {
+    this.orderedItems.update(items => {
+      const newItems: OrderItem[] = [...items];
+      newItems[index] = { 
+        ...newItems[index], 
+        [key]: value 
+      };
+      return newItems;
+    });
   }
 
   /** 送單 */
